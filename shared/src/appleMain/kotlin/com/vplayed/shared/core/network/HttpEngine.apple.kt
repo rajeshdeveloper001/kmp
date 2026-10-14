@@ -8,7 +8,7 @@ actual fun createPlatformHttpEngine(): HttpClientEngine = Darwin.create()
 
 /**
  * An NSURLSession engine whose session configuration the app adjusts, e.g. VPlayed's URL cache and
- * per-host connection limit (`APIClient.makeSession`), or a `URLProtocol` stub in tests.
+ * per-host connection limit (`SharedLayer.configureSession`), or a `URLProtocol` stub in tests.
  * Timeouts are set by the shared client (`SharedConfig`), not here.
  */
 fun createDarwinEngine(configure: (NSURLSessionConfiguration) -> Unit): HttpClientEngine = Darwin.create {

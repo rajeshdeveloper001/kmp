@@ -31,7 +31,7 @@ private const val REQUEST_TYPE_MOBILE = "mobile"
 private const val DEFAULT_LANGUAGE = "en"
 
 /**
- * The header set both apps send today (AndroidJP `ApiHeadersInterceptor`, VPlayed `RequestHeaders`):
+ * The header set both apps send (it replaced AndroidJP's `ApiHeadersInterceptor` and VPlayed's `RequestHeaders`):
  *
  * - always: `Accept`, `X-Request-Type: mobile`, `device_type`, `app_version`, `X-Language-Code`;
  * - `device_id` when the platform provides one;

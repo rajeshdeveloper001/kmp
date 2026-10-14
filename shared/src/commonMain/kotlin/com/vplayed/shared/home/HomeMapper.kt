@@ -9,6 +9,7 @@ import com.vplayed.shared.core.serialization.lenientString
 import com.vplayed.shared.core.serialization.localizedText
 import kotlin.math.roundToInt
 import kotlin.time.Instant
+import com.vplayed.shared.movies.MoviesPage
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -130,6 +131,16 @@ internal class HomeMapper(
             nextPage = response["next"].positiveInt(),
         )
     }
+
+    /**
+     * One page of the movie catalogue (`sho-details/media/1`): `data` items as portrait video
+     * cards, `total`, and `next` (null on the last page).
+     */
+    fun moviesPage(response: JsonObject): MoviesPage = MoviesPage(
+        items = items(response["data"], sectionType = ContentType.VIDEO, style = SectionStyle.PORTRAIT),
+        total = response["total"].lenientInt()?.takeIf { it >= 0 },
+        nextPage = response["next"].positiveInt(),
+    )
 
     private fun items(data: JsonElement?, sectionType: ContentType, style: SectionStyle): List<ContentItem> =
         data.objects().mapNotNull { item(it, sectionType, style) }.distinctBy { it.id }

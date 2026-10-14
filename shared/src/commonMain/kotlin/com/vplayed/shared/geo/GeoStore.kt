@@ -40,8 +40,8 @@ data class GeoState(
 }
 
 /**
- * Single source of truth for the public IP, geo token and currency (AndroidJP `GeoRestrictionStore`,
- * VPlayed `AppStartup.geoInfo` + `SessionStore.geoToken`). In memory only, as in both apps.
+ * Single source of truth for the public IP, geo token and currency (it replaced AndroidJP's
+ * `GeoRestrictionStore` and VPlayed's `SessionStore.geoToken`). In memory only, as in both apps.
  *
  * Everyone reads [state]; only [GeoRepository] writes. Updates are atomic and ignore blank values,
  * so a failed or empty response never erases the last valid values.

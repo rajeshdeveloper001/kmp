@@ -22,7 +22,7 @@ enum class ServerEnvironment(val id: String) {
 enum class ClientPlatform(val headerValue: String) {
     ANDROID("android"),
 
-    /** iPhone, iPad and the macOS build of the VPlayed target all identify as `ios` (current iOS app behaviour). */
+    /** iPhone, iPad, and the iPad app on Mac and Apple Vision Pro all identify as `ios` (current iOS app behaviour). */
     IOS("ios"),
 }
 

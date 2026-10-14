@@ -31,7 +31,7 @@ import kotlin.test.assertTrue
 import kotlin.test.fail
 
 /**
- * The backend contract of every endpoint the shared layer calls (KMP-602), through the real graph
+ * The backend contract of every endpoint the shared layer calls (KMP-602; Movies added in Phase 7), through the real graph
  * (headers, logging, session, encryption) on a scripted engine. Each endpoint meets the same
  * transport and server scenarios, and the table states what the app sees for each: endpoint-specific
  * answers (200 / 202 / 203 rules, row shapes) are covered by the repository tests.
@@ -103,6 +103,9 @@ class EndpointContractTest {
         },
         Endpoint("follow_studio", HttpMethod.Post, "/studios/api/v1/follow_studio", """{"statusCode":200,"message":"Followed"}""", false, dataDefaults) {
             it.homeRepository.setFollowing("studio-1", follow = true)
+        },
+        Endpoint("sho-details/media/1 (movies)", HttpMethod.Get, "/mediaview/api/v1/sho-details/media/1", """{"statusCode":200,"response":{"data":[],"total":0}}""", false, dataDefaults) {
+            it.moviesRepository.getPage(1)
         },
         Endpoint("common", HttpMethod.Get, "/mediaview/api/v1/common", """{"statusCode":200,"response":{"content_library":1}}""", false, dataDefaults) {
             it.commonSettingsRepository.load()

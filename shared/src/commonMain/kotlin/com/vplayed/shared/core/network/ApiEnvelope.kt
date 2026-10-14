@@ -36,7 +36,7 @@ class VPlayedResponse(
 ) {
     val isHttpSuccess: Boolean get() = httpStatus in HTTP_SUCCESS
 
-    /** The envelope's `statusCode` when present, else the HTTP status (VPlayed's `APIClient` rule). */
+    /** The envelope's `statusCode` when present, else the HTTP status (the UIKit app's rule, kept by VPlayed). */
     val effectiveStatusCode: Int get() = envelope?.statusCode ?: httpStatus
 
     /** The status that decides the outcome (D1): the HTTP status when it is not 2xx, else [effectiveStatusCode]. */

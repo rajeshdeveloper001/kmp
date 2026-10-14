@@ -15,12 +15,11 @@ used by both apps.
 | Target | Consumer | Artifact |
 |---|---|---|
 | Android (`com.android.kotlin.multiplatform.library`, compile 37 / min 24, JVM 11) | AndroidJP | `com.vplayed:shared:<version>` |
-| `iosArm64`, `iosSimulatorArm64`, `iosX64`, `macosArm64`, `macosX64` | VPlayed (iOS + macOS destinations) | `Shared.xcframework` (static, module `Shared`) |
+| `iosArm64`, `iosSimulatorArm64`, `iosX64` | VPlayed (iPhone, iPad) | `Shared.xcframework` (static, module `Shared`) |
 
-The Intel slices exist because VPlayed builds universal simulator and macOS binaries (macOS 26 still
-runs on Intel Macs). Kotlin has deprecated `macosX64`, so Intel Mac support will need a decision
-before Kotlin removes it. Their tests can't run on Apple-silicon hosts. visionOS has no Kotlin/Native
-target, so the VPlayed visionOS destination doesn't link `Shared` (`KMP_PLANNING/KMP_ARCHITECTURE_ANALYSIS.md` §6).
+VPlayed is an iOS-only target. It runs on Apple-silicon Macs and Apple Vision Pro as the iPad app
+("Designed for iPad"), which uses the `iosArm64` slice, so there are no macOS or visionOS targets.
+`iosX64` is for universal simulator builds; its tests can't run on Apple-silicon hosts.
 
 ## Toolchain
 
@@ -36,8 +35,7 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ```bash
 ./gradlew :shared:testAndroidHostTest          # common + Android tests on the JVM
 ./gradlew :shared:iosSimulatorArm64Test        # common + Apple tests on the iOS simulator
-./gradlew :shared:macosArm64Test               # common + Apple tests natively on macOS
-./gradlew :shared:allTests                     # all three
+./gradlew :shared:allTests                     # both
 ./gradlew -I scripts/coverage.init.gradle.kts :shared:koverHtmlReport :shared:koverVerify   # line coverage (opt-in Kover)
 ./gradlew :shared:assembleSharedXCFramework    # build/XCFrameworks/{debug,release}/Shared.xcframework
 ./gradlew :shared:publishToMavenLocal          # com.vplayed:shared:<version> in ~/.m2
@@ -104,12 +102,26 @@ androidHostTest/            OkHttpEngineTest: the OkHttp engine against a real l
   (and AndroidJP's composite build) never load it. Proposed gate: 90 % lines on the JVM run (96.6 %
   in Phase 6); Apple-only code is covered by VPlayed's tests.
 
+## Module dependencies
+
+```
+AndroidJP :app ──(composite build: includeBuild("../kmp"))──► kmp :shared ◄──(Shared.xcframework in SharedKit, built by
+   Hilt modules provide SharedGraph,                          scripts/build-shared.sh)── VPlayed (iOS; on Mac and
+   SessionManager, GeoStore                                                                         Vision Pro as the iPad app)
+```
+
+`:shared` depends only on kotlinx-coroutines, kotlinx-serialization and Ktor (OkHttp engine on
+Android, Darwin on Apple). It never depends on an app. Each app supplies its platform pieces (device
+facts, secure storage, the HTTP engine factory) and owns when things run (geo refresh triggers,
+storing a session after its flow, sign-out). Changes here reach AndroidJP on its next build and
+VPlayed after `scripts/build-shared.sh`; keep both apps' tests green before merging.
+
 ## Consumers
 
 | App | How it links | What uses the shared layer |
 |---|---|---|
-| AndroidJP | `includeBuild("../kmp")` with a substitution for `com.vplayed:shared`; Hilt `@Provides @Singleton SharedGraph` (`core/shared/SharedModule`), which also gets the app's `GeoStore` | Login: `LoginViewModel` / `OtpViewModel` delegate to the controllers on `viewModelScope`. Home: `HomeViewModel` runs `HomeFeedController`, the UI uses the shared models. Geo: `GeoRefreshWorker` calls `GeoRepository`; both header stacks read `GeoStore` |
-| VPlayed | `scripts/build-shared.sh` builds `Shared.xcframework` into the local `SharedKit` package (`binaryTarget`); `@preconcurrency import Shared` in adapter files | Login: `SharedLoginViewModel` on `SharedGraph.emailLoginController` / `otpController` (own main-thread scopes, closed with the screen); logout: `SharedAuthService`. Home: `SharedHomeViewModel` on `homeFeedController()`, mapped to the Swift view structs by `SharedHomeMapping`. Launch: `SharedStartupService` (settings, geo). visionOS has no Kotlin target and keeps Swift versions |
+| AndroidJP | `includeBuild("../kmp")` with a substitution for `com.vplayed:shared`; Hilt `@Provides @Singleton SharedGraph` (`core/shared/SharedModule`) on the app's `OkHttpClient`, with the app's `SessionManager` (over `KeystoreSecureStore`) and `GeoStore` | Login: `LoginViewModel` / `OtpViewModel` delegate to the controllers on `viewModelScope`. Home: `HomeViewModel` runs `HomeFeedController`, the UI uses the shared models. Geo: `GeoRefreshWorker` calls `GeoRepository`. Session: splash, app shell (side-menu Sign out through `SessionManager.logout`), Login and OTP use `SessionManager`. No other network stack is left |
+| VPlayed | `scripts/build-shared.sh` builds `Shared.xcframework` into the local `SharedKit` package (`binaryTarget`); `@preconcurrency import Shared` in adapter files; `SharedLayer.sessions` over `KeychainSecureStore` | Login: `SharedLoginViewModel` on `SharedGraph.emailLoginController` / `otpController` (own main-thread scopes, closed with the screen); logout: `SharedAuthService` (`SharedGraph.logout`); session: `AccountStore` over `SessionManager`. Home: `SharedHomeViewModel` on `homeFeedController()`, mapped to the Swift view structs by `SharedHomeMapping`. Movies: `SharedMoviesService` on `moviesRepository`. Launch: `SharedStartupService` (settings, geo). No other network stack is left |
 
 Swift adapters map sealed results with `as?` casts (`EmailLoginResultCodeSent`, …), read a
 controller's state with `currentState` (a `StateFlow` value is untyped in Swift), observe it with

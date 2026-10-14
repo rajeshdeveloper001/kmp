@@ -17,8 +17,8 @@ import kotlinx.serialization.json.JsonPrimitive
  * The VPlayed API is inconsistent about scalar types: `video_duration` is "267.72" or 125, counts
  * are numbers or numeric strings, flags are true/false, 0/1 or "1", titles are a string or a
  * `{"en": "…"}` map. These helpers read such values and treat anything malformed as absent, so one
- * odd field never fails a whole response. They combine AndroidJP's `HomeMapper` helpers and
- * VPlayed's `LenientDecoding.swift`.
+ * odd field never fails a whole response. They combine AndroidJP's former `HomeMapper` helpers
+ * and VPlayed's former `LenientDecoding.swift`.
  */
 
 /** Trimmed text of a JSON string or number; null for blanks, objects, arrays and `null`. */

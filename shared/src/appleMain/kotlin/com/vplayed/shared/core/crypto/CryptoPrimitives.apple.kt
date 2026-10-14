@@ -21,7 +21,7 @@ import platform.Security.errSecSuccess
 import platform.Security.kSecRandomDefault
 import platform.posix.size_tVar
 
-/** CommonCrypto, as VPlayed's `CryptoJSAES.swift` uses. */
+/** CommonCrypto, as VPlayed's former `CryptoJSAES.swift` used. */
 @OptIn(ExperimentalForeignApi::class)
 private object AppleCryptoPrimitives : CryptoPrimitives {
 

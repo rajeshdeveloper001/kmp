@@ -13,17 +13,14 @@ group = "com.vplayed"
 version = "0.1.0"
 
 kotlin {
-    // One XCFramework for the VPlayed target: iOS device, iOS simulator and macOS, with Intel slices
-    // because the app ships universal simulator and macOS (Intel Macs run macOS 26) builds.
-    // macosX64 is deprecated in Kotlin (removal announced); dropping it means dropping Intel Macs.
-    // visionOS has no Kotlin/Native target (KMP_PLANNING/KMP_ARCHITECTURE_ANALYSIS.md §6).
+    // One XCFramework for the VPlayed target: iOS device and iOS simulator (with the Intel slice for
+    // universal simulator builds). VPlayed runs on Apple-silicon Macs and Apple Vision Pro as the iPad
+    // app ("Designed for iPad"), which uses the iosArm64 slice, so there are no macOS or visionOS targets.
     val xcFramework = XCFramework("Shared")
     listOf(
         iosArm64(),
         iosSimulatorArm64(),
         iosX64(),
-        macosArm64(),
-        macosX64(),
     ).forEach { appleTarget ->
         appleTarget.binaries.framework {
             baseName = "Shared"

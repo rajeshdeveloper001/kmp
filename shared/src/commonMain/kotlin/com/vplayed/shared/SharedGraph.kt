@@ -27,6 +27,8 @@ import com.vplayed.shared.home.HomeFeedController
 import com.vplayed.shared.home.HomeImagePolicy
 import com.vplayed.shared.home.HomeMapper
 import com.vplayed.shared.home.HomeRepository
+import com.vplayed.shared.movies.DefaultMoviesRepository
+import com.vplayed.shared.movies.MoviesRepository
 import com.vplayed.shared.session.SessionCredentials
 import com.vplayed.shared.session.SessionManager
 import com.vplayed.shared.settings.CommonSettingsRepository
@@ -64,8 +66,8 @@ class SharedGraph(
     val config: SharedConfig,
     private val platform: PlatformDependencies,
     /**
-     * The signed-in or guest session (Phase 5), created by the app over its secure storage. Passed in,
-     * like [geoStore], because AndroidJP's request headers read it before the graph exists.
+     * The signed-in or guest session (Phase 5), created by the app over its secure storage and passed
+     * in like [geoStore], so app code and tests can use it without the graph.
      */
     val sessionManager: SessionManager,
     /** The geo token and location. VPlayed uses the constructor without it. */
@@ -125,17 +127,20 @@ class SharedGraph(
         DefaultCommonSettingsRepository(apiCaller, config.platform)
     }
 
-    /** Banners, rows, row items and channel follow (Phase 4). */
-    val homeRepository: HomeRepository by lazy {
-        DefaultHomeRepository(
-            api = apiCaller,
-            mapper = HomeMapper(
-                imageBaseUrl = config.imageBaseUrl,
-                imagePolicy = HomeImagePolicy.forPlatform(config.platform),
-                language = platform.deviceInfo::languageCode,
-            ),
+    /** Maps content JSON for Home and Movies (one image table per app, the device language). */
+    private val homeMapper: HomeMapper by lazy {
+        HomeMapper(
+            imageBaseUrl = config.imageBaseUrl,
+            imagePolicy = HomeImagePolicy.forPlatform(config.platform),
+            language = platform.deviceInfo::languageCode,
         )
     }
+
+    /** Banners, rows, row items and channel follow (Phase 4). */
+    val homeRepository: HomeRepository by lazy { DefaultHomeRepository(api = apiCaller, mapper = homeMapper) }
+
+    /** The movie catalogue (VPlayed's Movies tab). */
+    val moviesRepository: MoviesRepository by lazy { DefaultMoviesRepository(apiCaller, homeMapper) }
 
     /** A Home feed controller with its own main-thread scope (see [emailLoginController]). */
     fun homeFeedController(): HomeFeedController = HomeFeedController(homeRepository, mainScope())
