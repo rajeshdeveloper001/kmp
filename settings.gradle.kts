@@ -14,6 +14,11 @@ pluginManagement {
     }
 }
 
+plugins {
+    // Resolves the daemon JVM (gradle/gradle-daemon-jvm.properties) the same way AndroidJP does.
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 dependencyResolutionManagement {
     repositories {
         google {
@@ -27,5 +32,5 @@ dependencyResolutionManagement {
     }
 }
 
-include(":androidApp")
+// The real apps (AndroidJP, VPlayed) consume :shared; the wizard's demo hosts were removed.
 include(":shared")

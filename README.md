@@ -1,31 +1,79 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# SharedKmp — VPlayed shared business logic
 
-* [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+Kotlin Multiplatform library (`:shared`) holding the business logic both VPlayed apps use:
+networking, request encryption, models, validation, and later auth, session and Home. **No UI
+lives here.** Screens stay native: Jetpack Compose in `AndroidJP`, SwiftUI in `VPlayed`.
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-    folder is the appropriate location.
+The plan and its decisions are in `../KMP_PLANNING/` (architecture, API mapping, storage, migration
+plan, backlog). This README covers Phase 2 (foundation).
 
-### Running the apps
+## Targets
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
+| Target | Consumer | Artifact |
+|---|---|---|
+| Android (`com.android.kotlin.multiplatform.library`, compile 37 / min 24, JVM 11) | AndroidJP | `com.vplayed:shared:<version>` |
+| `iosArm64`, `iosSimulatorArm64`, `iosX64`, `macosArm64`, `macosX64` | VPlayed (iOS + macOS destinations) | `Shared.xcframework` (static, module `Shared`) |
 
-- Android app: `./gradlew :androidApp:assembleDebug`
-- iOS app: open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+The Intel slices exist because VPlayed builds universal simulator and macOS binaries (macOS 26 still
+runs on Intel Macs). Kotlin has deprecated `macosX64`, so Intel Mac support will need a decision
+before Kotlin removes it. Their tests can't run on Apple-silicon hosts. visionOS has no Kotlin/Native
+target, so the VPlayed visionOS destination doesn't link `Shared` (`KMP_PLANNING/KMP_ARCHITECTURE_ANALYSIS.md` §6).
 
-### Running tests
+## Toolchain
 
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
+Aligned with AndroidJP: Kotlin 2.4.21, AGP 9.4.1, Gradle 9.6.0. The daemon JVM is JDK 25
+(`gradle/gradle-daemon-jvm.properties`). On the command line, use Android Studio's JBR:
 
-- Android tests: `./gradlew :shared:testAndroidHostTest`
-- iOS tests: `./gradlew :shared:iosSimulatorArm64Test`
+```bash
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+```
 
----
+## Common tasks
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+```bash
+./gradlew :shared:testAndroidHostTest          # common + Android tests on the JVM
+./gradlew :shared:iosSimulatorArm64Test        # common + Apple tests on the iOS simulator
+./gradlew :shared:macosArm64Test               # common + Apple tests natively on macOS
+./gradlew :shared:assembleSharedXCFramework    # build/XCFrameworks/{debug,release}/Shared.xcframework
+./gradlew :shared:publishToMavenLocal          # com.vplayed:shared:<version> in ~/.m2
+```
+
+## Package layout (`shared/src`)
+
+```
+commonMain/kotlin/com/vplayed/shared/
+  SharedGraph.kt            manual DI: one per process (Hilt @Provides on Android, MyApp.init on iOS)
+  core/config/              SharedConfig, ServerEnvironment, ClientPlatform
+  core/platform/            DeviceInfo (implemented by each app), SharedLogger
+  core/error/               AppError, DataResult, resultOf, ApiException
+  core/network/             HttpClientFactory, ApiCaller, VPlayedResponse/ApiEnvelope,
+                            VPlayedHeaders plugin, RequestLogging plugin, RequestOptions, RequestCredentials
+  core/serialization/       SharedJson, lenient readers (lenientInt/Bool/String…, localizedText), LossyListSerializer
+  core/crypto/              TransportCipher (CryptoJS/OpenSSL "Salted__" AES-256-CBC), CryptoPrimitives
+  validation/               EmailValidator
+  session/                  SecureStore interface (implemented per platform in Phase 5)
+androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
+appleMain/                  Darwin engine, CommonCrypto, NSLog, FlowWatcher / StateFlowWatcher (Swift bridge)
+commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
+```
+
+## Rules for shared code
+
+- **No UI, no platform singletons.** No Compose, SwiftUI, UIKit, Hilt or Android `Context` in `commonMain`.
+- **Public APIs never throw.** Return `DataResult` or a sealed result type. A Kotlin exception that
+  reaches Swift crashes the app. Coroutine cancellation is the only thing rethrown.
+- **Status codes carry meaning.** HTTP clients use `expectSuccess = false`, and repositories read both
+  `VPlayedResponse.httpStatus` and `effectiveStatusCode`.
+- **No secrets or personal data in logs or `toString()`.** Use `RequestOptions.Sensitive` for auth calls.
+  `AuthTokens`, `SharedConfig` and `VPlayedResponse` mask their contents.
+- **User-facing text stays native.** Shared code returns typed results or message keys. Android maps
+  them to `strings.xml`, iOS to `Localizable.xcstrings`.
+- **Only synthetic test fixtures.** Real API responses contain personal data.
+
+## Consuming from the apps (Phase 2 remainder, not done yet)
+
+- **AndroidJP:** `includeBuild("../kmp")` in `settings.gradle.kts` with a substitution for
+  `com.vplayed:shared`, plus a Hilt `@Provides @Singleton SharedGraph` built from `AppConfig`.
+- **VPlayed:** a local Swift package wrapping `Shared.xcframework` as a `binaryTarget`, and
+  `@preconcurrency import Shared` in adapter files. The adapters are `@Observable` classes that use
+  `StateFlowWatcher.watch(onEach:)` and close the returned `Closeable` in `deinit`.
