@@ -37,6 +37,8 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ./gradlew :shared:testAndroidHostTest          # common + Android tests on the JVM
 ./gradlew :shared:iosSimulatorArm64Test        # common + Apple tests on the iOS simulator
 ./gradlew :shared:macosArm64Test               # common + Apple tests natively on macOS
+./gradlew :shared:allTests                     # all three
+./gradlew -I scripts/coverage.init.gradle.kts :shared:koverHtmlReport :shared:koverVerify   # line coverage (opt-in Kover)
 ./gradlew :shared:assembleSharedXCFramework    # build/XCFrameworks/{debug,release}/Shared.xcframework
 ./gradlew :shared:publishToMavenLocal          # com.vplayed:shared:<version> in ~/.m2
 ```
@@ -72,7 +74,9 @@ commonMain/kotlin/com/vplayed/shared/
 androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
 appleMain/                  Darwin engine, CommonCrypto, NSLog, FlowWatcher / StateFlowWatcher (Swift bridge),
                             controller watchState / watchEffects / currentState for Swift (auth, Home)
-commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
+commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test); EndpointContractTest runs every
+                            endpoint through the same failure scenarios, the D21 rule and a no-secrets log check
+androidHostTest/            OkHttpEngineTest: the OkHttp engine against a real local HTTP server
 ```
 
 ## Rules for shared code
@@ -96,6 +100,9 @@ commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
 - **User-facing text stays native.** Shared code returns typed results or message keys. Android maps
   them to `strings.xml`, iOS to `Localizable.xcstrings`.
 - **Only synthetic test fixtures.** Real API responses contain personal data.
+- **Coverage.** Kover is applied only through `scripts/coverage.init.gradle.kts`, so normal builds
+  (and AndroidJP's composite build) never load it. Proposed gate: 90 % lines on the JVM run (96.6 %
+  in Phase 6); Apple-only code is covered by VPlayed's tests.
 
 ## Consumers
 
