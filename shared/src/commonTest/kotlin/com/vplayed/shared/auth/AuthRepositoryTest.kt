@@ -392,11 +392,11 @@ class AuthRepositoryTest {
 
     @Test
     fun givenDeviceTypes_whenMapping_thenIconKind() {
-        assertEquals(DeviceKind.PHONE, AuthRepository.deviceKindOf("android"))
-        assertEquals(DeviceKind.TV, AuthRepository.deviceKindOf("Android TV"))
-        assertEquals(DeviceKind.DESKTOP, AuthRepository.deviceKindOf("Web"))
-        assertEquals(DeviceKind.OTHER, AuthRepository.deviceKindOf(null))
-        assertEquals(DeviceKind.OTHER, AuthRepository.deviceKindOf("toaster"))
+        assertEquals(DeviceKind.PHONE, DefaultAuthRepository.deviceKindOf("android"))
+        assertEquals(DeviceKind.TV, DefaultAuthRepository.deviceKindOf("Android TV"))
+        assertEquals(DeviceKind.DESKTOP, DefaultAuthRepository.deviceKindOf("Web"))
+        assertEquals(DeviceKind.OTHER, DefaultAuthRepository.deviceKindOf(null))
+        assertEquals(DeviceKind.OTHER, DefaultAuthRepository.deviceKindOf("toaster"))
     }
 
     // endregion

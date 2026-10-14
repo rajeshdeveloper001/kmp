@@ -50,12 +50,15 @@ commonMain/kotlin/com/vplayed/shared/
                             VPlayedHeaders plugin, RequestLogging plugin, RequestOptions, RequestCredentials
   core/serialization/       SharedJson, lenient readers (lenientInt/Bool/String…, localizedText), LossyListSerializer
   core/crypto/              TransportCipher (CryptoJS/OpenSSL "Salted__" AES-256-CBC), CryptoPrimitives
-  auth/                     AuthRepository (email-login, verifyEmailOtp, logout-device, verifyEmailLogin,
-                            generate, logout) and its result types; status rules D1–D5 in its KDoc
+  auth/                     AuthRepository + DefaultAuthRepository (email-login, verifyEmailOtp, logout-device,
+                            verifyEmailLogin, generate, logout; status rules D1–D5 in its KDoc), result types,
+                            EmailLoginController / OtpController (the sign-in flow: state, intents, effects),
+                            AuthFlowConfig, AuthMessage / AuthMessageKey (text stays in the apps)
   validation/               EmailValidator
   session/                  SecureStore interface (implemented per platform in Phase 5)
 androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
-appleMain/                  Darwin engine, CommonCrypto, NSLog, FlowWatcher / StateFlowWatcher (Swift bridge)
+appleMain/                  Darwin engine, CommonCrypto, NSLog, FlowWatcher / StateFlowWatcher (Swift bridge),
+                            controller watchState / watchEffects / currentState for Swift
 commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
 ```
 
@@ -80,8 +83,11 @@ commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
 
 | App | How it links | What uses the shared layer |
 |---|---|---|
-| AndroidJP | `includeBuild("../kmp")` with a substitution for `com.vplayed:shared`; Hilt `@Provides @Singleton SharedGraph` (`core/shared/SharedModule`) | Login: `SharedAuthRepository` binds the app's `AuthRepository` to `SharedGraph.authRepository` |
-| VPlayed | `scripts/build-shared.sh` builds `Shared.xcframework` into the local `SharedKit` package (`binaryTarget`); `@preconcurrency import Shared` in adapter files | Sign-in, guest and logout: `SharedAuthService` (iOS, macOS). visionOS has no Kotlin target and keeps the Swift `AuthService` |
+| AndroidJP | `includeBuild("../kmp")` with a substitution for `com.vplayed:shared`; Hilt `@Provides @Singleton SharedGraph` (`core/shared/SharedModule`) | Login: `LoginViewModel` / `OtpViewModel` delegate to the controllers on `viewModelScope`; Hilt provides `SharedGraph.authRepository` |
+| VPlayed | `scripts/build-shared.sh` builds `Shared.xcframework` into the local `SharedKit` package (`binaryTarget`); `@preconcurrency import Shared` in adapter files | Login: `SharedLoginViewModel` on `SharedGraph.emailLoginController` / `otpController` (own main-thread scopes, closed with the screen); logout: `SharedAuthService`. visionOS has no Kotlin target and keeps Swift versions |
 
-Swift adapters map sealed results with `as?` casts (`EmailLoginResultCodeSent`, …). State holders
-exposing flows will use `StateFlowWatcher.watch(onEach:)` and close the returned `Closeable` in `deinit`.
+Swift adapters map sealed results with `as?` casts (`EmailLoginResultCodeSent`, …), read a
+controller's state with `currentState` (a `StateFlow` value is untyped in Swift), observe it with
+`watchState` / `watchEffects` and close the returned `Closeable`s and the controller together.
+Avoid Kotlin names Objective-C reserves (an enum entry `NEW_…` becomes `theNew…`) and nested
+types whose flattened Swift name collides with another type (`AuthMessage.Key` vs `AuthMessageKey`).

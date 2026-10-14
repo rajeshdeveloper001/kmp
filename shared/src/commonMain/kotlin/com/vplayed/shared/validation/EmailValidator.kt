@@ -5,9 +5,9 @@ enum class EmailValidationResult { VALID, EMPTY, INVALID_FORMAT, TOO_LONG }
 /**
  * The email rule for every form. Input is trimmed first.
  *
- * Proposed shared rule for divergence D16 (KMP_PLANNING/KMP_ARCHITECTURE_ANALYSIS.md §5), pending
- * sign-off: VPlayed's (UIKit-parity) pattern — local part, '@', domain with a 2–64 letter TLD — and
- * its 50-character limit. AndroidJP today accepts any TLD length and has no limit.
+ * Decision D16 (KMP_PLANNING/KMP_ARCHITECTURE_ANALYSIS.md §5), used by both apps: VPlayed's
+ * (UIKit-parity) pattern — local part, '@', domain with a 2–64 letter TLD — and its 50-character
+ * limit. AndroidJP used to accept any TLD length with no limit.
  */
 object EmailValidator {
     const val MAX_LENGTH = 50

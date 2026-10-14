@@ -6,7 +6,12 @@ import com.vplayed.shared.core.crypto.TransportCipher
 import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.network.ApiCaller
 import com.vplayed.shared.core.network.HttpClientFactory
+import com.vplayed.shared.auth.AuthFlowConfig
 import com.vplayed.shared.auth.AuthRepository
+import com.vplayed.shared.auth.DefaultAuthRepository
+import com.vplayed.shared.auth.DeviceLimit
+import com.vplayed.shared.auth.EmailLoginController
+import com.vplayed.shared.auth.OtpController
 import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RequestCredentials
 import com.vplayed.shared.core.network.createPlatformHttpEngine
@@ -16,6 +21,9 @@ import com.vplayed.shared.core.platform.platformLogger
 import com.vplayed.shared.core.serialization.SharedJson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.Json
 
 /** What each app supplies to the shared layer. */
@@ -74,8 +82,22 @@ class SharedGraph(
 
     /** Email sign-in, device limit, guest login and logout (Phase 3). */
     val authRepository: AuthRepository by lazy {
-        AuthRepository(apiCaller, json, platform.deviceInfo, ::encryptForTransport)
+        DefaultAuthRepository(apiCaller, json, platform.deviceInfo, ::encryptForTransport)
     }
+
+    /**
+     * An email-step controller with its own main-thread scope, for platforms without a lifecycle
+     * scope (VPlayed): call `close()` when the screen goes away. AndroidJP builds controllers on
+     * `viewModelScope` instead.
+     */
+    fun emailLoginController(config: AuthFlowConfig): EmailLoginController =
+        EmailLoginController(authRepository, mainScope(), config)
+
+    /** A code-step controller with its own main-thread scope (see [emailLoginController]). */
+    fun otpController(email: String, initialDeviceLimit: DeviceLimit?, config: AuthFlowConfig): OtpController =
+        OtpController(email, authRepository, initialDeviceLimit, mainScope(), config)
+
+    private fun mainScope() = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     /**
      * Encrypts a request payload with the build's transport key. Null when the build has no key

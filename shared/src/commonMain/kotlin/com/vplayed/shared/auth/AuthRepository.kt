@@ -22,10 +22,34 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.put
 
 /**
- * The VPlayed sign-in endpoints (AndroidJP `docs/api/auth-api.md`): email code, device limit,
- * guest session and logout. Every call returns a result type and none throws.
+ * The VPlayed sign-in endpoints. Every call returns a result type and none throws. The apps get
+ * [DefaultAuthRepository] from `SharedGraph.authRepository`; tests and the Android instrumented
+ * tests use fakes.
+ */
+interface AuthRepository {
+    /** Requests (or re-requests) a login code for [email] (trimmed by the implementation). */
+    suspend fun requestEmailLogin(email: String): EmailLoginResult
+
+    /** Verifies [code] for [email]. On success the caller stores [OtpVerificationResult.Verified.session]. */
+    suspend fun verifyEmailOtp(email: String, code: String): OtpVerificationResult
+
+    /** Signs a device out of the account ([all] = every device, using [key] of the first). */
+    suspend fun signOutDevice(key: DeviceSignOutKey, all: Boolean): SignOutDeviceResult
+
+    /** Completes the login for [email] after devices were signed out, **without a code** (decision D5). */
+    suspend fun continueAfterDeviceSignOut(email: String): OtpVerificationResult
+
+    /** Starts a guest session for this device. */
+    suspend fun guestLogin(): GuestLoginResult
+
+    /** Ends the current session on the server. */
+    suspend fun logout(): LogoutResult
+}
+
+/**
+ * [AuthRepository] against the VPlayed backend (AndroidJP `docs/api/auth-api.md`).
  *
- * How answers are read (decisions recorded in `KMP_PLANNING/KMP_ARCHITECTURE_ANALYSIS.md` §13):
+ * How answers are read (decisions recorded in `KMP_PLANNING/KMP_ARCHITECTURE_ANALYSIS.md` §5):
  * - **D1** — a non-2xx HTTP status is always a failure. Within 2xx the envelope's `statusCode`
  *   decides when present, else the HTTP status. A 2xx answer with `"error": true` is a refusal.
  * - **D2** — `email-login` 203 means a code was sent to a new account: go to the code step.
@@ -38,16 +62,16 @@ import kotlinx.serialization.json.put
  * Request bodies hold emails, codes and tokens, so every call is [RequestOptions.Sensitive] and
  * nothing about them is logged. The session is returned, not stored: the apps own it until Phase 5.
  */
-class AuthRepository internal constructor(
+class DefaultAuthRepository internal constructor(
     private val api: ApiCaller,
     private val json: Json,
     private val deviceInfo: DeviceInfo,
     /** The graph's transport encryption; null when the build has no key. */
     private val encrypt: (String) -> String?,
-) {
+) : AuthRepository {
 
     /** Requests (or re-requests) a login code for [email] (trimmed here). */
-    suspend fun requestEmailLogin(email: String): EmailLoginResult {
+    override suspend fun requestEmailLogin(email: String): EmailLoginResult {
         val body = encryptedBody { put("email", email.trim()) }
             ?: return EmailLoginResult.Failure(AppError.Configuration(MISSING_KEY))
         return when (val result = api.postJson(EMAIL_LOGIN, body, RequestOptions.Sensitive)) {
@@ -57,7 +81,7 @@ class AuthRepository internal constructor(
     }
 
     /** Verifies [code] for [email]. On success the caller stores [OtpVerificationResult.Verified.session]. */
-    suspend fun verifyEmailOtp(email: String, code: String): OtpVerificationResult {
+    override suspend fun verifyEmailOtp(email: String, code: String): OtpVerificationResult {
         val address = email.trim()
         val body = encryptedBody {
             put("email", address)
@@ -71,7 +95,7 @@ class AuthRepository internal constructor(
     }
 
     /** Signs a device out of the account ([all] = every device, using [key] of the first). */
-    suspend fun signOutDevice(key: DeviceSignOutKey, all: Boolean): SignOutDeviceResult {
+    override suspend fun signOutDevice(key: DeviceSignOutKey, all: Boolean): SignOutDeviceResult {
         val fields = buildList {
             add("username" to key.username)
             key.accessToken?.let { add("access_token" to it) }
@@ -87,7 +111,7 @@ class AuthRepository internal constructor(
      * Completes the login for [email] after devices were signed out — **without a code** (the
      * previous Android app's `verifyEmailLogin`; decision D5, pending the backend's security answer).
      */
-    suspend fun continueAfterDeviceSignOut(email: String): OtpVerificationResult {
+    override suspend fun continueAfterDeviceSignOut(email: String): OtpVerificationResult {
         val address = email.trim()
         val fields = listOf(
             "is_email_verified" to "1",
@@ -102,7 +126,7 @@ class AuthRepository internal constructor(
     }
 
     /** Starts a guest session for this device (`{"uuid": device id}`, not encrypted). */
-    suspend fun guestLogin(): GuestLoginResult {
+    override suspend fun guestLogin(): GuestLoginResult {
         val deviceId = deviceInfo.deviceId?.takeIf { it.isNotBlank() }
             ?: return GuestLoginResult.Failure(AppError.Configuration("No device id for a guest session"))
         val body = buildJsonObject { put("uuid", deviceId) }
@@ -113,7 +137,7 @@ class AuthRepository internal constructor(
     }
 
     /** Ends the current session on the server (the `Authorization` header says which). */
-    suspend fun logout(): LogoutResult =
+    override suspend fun logout(): LogoutResult =
         when (val result = api.postJson(LOGOUT, JsonObject(emptyMap()), RequestOptions.Sensitive)) {
             is DataResult.Failure -> LogoutResult.Failure(result.error)
             is DataResult.Success -> result.data.toLogoutResult()
