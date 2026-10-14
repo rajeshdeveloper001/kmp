@@ -6,7 +6,9 @@ import com.vplayed.shared.core.crypto.TransportCipher
 import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.network.ApiCaller
 import com.vplayed.shared.core.network.HttpClientFactory
+import com.vplayed.shared.auth.AuthRepository
 import com.vplayed.shared.core.network.InMemoryRequestCredentials
+import com.vplayed.shared.core.network.RequestCredentials
 import com.vplayed.shared.core.network.createPlatformHttpEngine
 import com.vplayed.shared.core.platform.DeviceInfo
 import com.vplayed.shared.core.platform.SharedLogger
@@ -23,13 +25,20 @@ class PlatformDependencies(
     /** Called once per HTTP client; tests pass a `MockEngine`. */
     val engineFactory: () -> HttpClientEngine,
     val cryptoPrimitives: CryptoPrimitives,
+    /**
+     * Session and geo credentials for request headers. AndroidJP reads its own session and geo
+     * stores live; VPlayed passes an [InMemoryRequestCredentials] that its `SessionStore` updates.
+     * The apps own the session until the shared session manager (Phase 5).
+     */
+    val requestCredentials: RequestCredentials,
 ) {
-    /** Platform defaults: system log, OkHttp / Darwin engine, javax.crypto / CommonCrypto. */
+    /** Platform defaults: system log, OkHttp / Darwin engine, javax.crypto / CommonCrypto, in-memory credentials. */
     constructor(deviceInfo: DeviceInfo) : this(
         deviceInfo = deviceInfo,
         logger = platformLogger(),
         engineFactory = ::createPlatformHttpEngine,
         cryptoPrimitives = platformCryptoPrimitives(),
+        requestCredentials = InMemoryRequestCredentials(),
     )
 }
 
@@ -46,8 +55,8 @@ class SharedGraph(
 
     val logger: SharedLogger get() = platform.logger
 
-    /** Session and geo credentials for request headers (moves under the session manager in Phase 3). */
-    val requestCredentials: InMemoryRequestCredentials = InMemoryRequestCredentials()
+    /** Where request headers read the session and geo token from (supplied by the app). */
+    val requestCredentials: RequestCredentials get() = platform.requestCredentials
 
     val transportCipher: TransportCipher by lazy { TransportCipher(platform.cryptoPrimitives) }
 
@@ -62,6 +71,11 @@ class SharedGraph(
     }
 
     val apiCaller: ApiCaller by lazy { ApiCaller(backendHttpClient, json) }
+
+    /** Email sign-in, device limit, guest login and logout (Phase 3). */
+    val authRepository: AuthRepository by lazy {
+        AuthRepository(apiCaller, json, platform.deviceInfo, ::encryptForTransport)
+    }
 
     /**
      * Encrypts a request payload with the build's transport key. Null when the build has no key

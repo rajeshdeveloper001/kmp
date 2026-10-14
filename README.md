@@ -5,7 +5,7 @@ networking, request encryption, models, validation, and later auth, session and 
 lives here.** Screens stay native: Jetpack Compose in `AndroidJP`, SwiftUI in `VPlayed`.
 
 The plan and its decisions are in `../KMP_PLANNING/` (architecture, API mapping, storage, migration
-plan, backlog). This README covers Phase 2 (foundation).
+plan, backlog). Done so far: Phase 2 (foundation) and Phase 3 (sign-in, `auth/`), used by both apps.
 
 ## Targets
 
@@ -50,6 +50,8 @@ commonMain/kotlin/com/vplayed/shared/
                             VPlayedHeaders plugin, RequestLogging plugin, RequestOptions, RequestCredentials
   core/serialization/       SharedJson, lenient readers (lenientInt/Bool/String…, localizedText), LossyListSerializer
   core/crypto/              TransportCipher (CryptoJS/OpenSSL "Salted__" AES-256-CBC), CryptoPrimitives
+  auth/                     AuthRepository (email-login, verifyEmailOtp, logout-device, verifyEmailLogin,
+                            generate, logout) and its result types; status rules D1–D5 in its KDoc
   validation/               EmailValidator
   session/                  SecureStore interface (implemented per platform in Phase 5)
 androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
@@ -63,17 +65,23 @@ commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
 - **Public APIs never throw.** Return `DataResult` or a sealed result type. A Kotlin exception that
   reaches Swift crashes the app. Coroutine cancellation is the only thing rethrown.
 - **Status codes carry meaning.** HTTP clients use `expectSuccess = false`, and repositories read both
-  `VPlayedResponse.httpStatus` and `effectiveStatusCode`.
+  `VPlayedResponse.httpStatus` and `effectiveStatusCode`. Decision D1: a non-2xx HTTP status always
+  fails; within 2xx the envelope's `statusCode` decides when present (`authStatus`).
+- **The apps own the session until Phase 5.** Repositories return sessions; they don't store them.
+  Request headers read credentials through the `RequestCredentials` the app supplies in
+  `PlatformDependencies` (AndroidJP reads its stores live; VPlayed mirrors its `SessionStore`).
 - **No secrets or personal data in logs or `toString()`.** Use `RequestOptions.Sensitive` for auth calls.
   `AuthTokens`, `SharedConfig` and `VPlayedResponse` mask their contents.
 - **User-facing text stays native.** Shared code returns typed results or message keys. Android maps
   them to `strings.xml`, iOS to `Localizable.xcstrings`.
 - **Only synthetic test fixtures.** Real API responses contain personal data.
 
-## Consuming from the apps (Phase 2 remainder, not done yet)
+## Consumers
 
-- **AndroidJP:** `includeBuild("../kmp")` in `settings.gradle.kts` with a substitution for
-  `com.vplayed:shared`, plus a Hilt `@Provides @Singleton SharedGraph` built from `AppConfig`.
-- **VPlayed:** a local Swift package wrapping `Shared.xcframework` as a `binaryTarget`, and
-  `@preconcurrency import Shared` in adapter files. The adapters are `@Observable` classes that use
-  `StateFlowWatcher.watch(onEach:)` and close the returned `Closeable` in `deinit`.
+| App | How it links | What uses the shared layer |
+|---|---|---|
+| AndroidJP | `includeBuild("../kmp")` with a substitution for `com.vplayed:shared`; Hilt `@Provides @Singleton SharedGraph` (`core/shared/SharedModule`) | Login: `SharedAuthRepository` binds the app's `AuthRepository` to `SharedGraph.authRepository` |
+| VPlayed | `scripts/build-shared.sh` builds `Shared.xcframework` into the local `SharedKit` package (`binaryTarget`); `@preconcurrency import Shared` in adapter files | Sign-in, guest and logout: `SharedAuthService` (iOS, macOS). visionOS has no Kotlin target and keeps the Swift `AuthService` |
+
+Swift adapters map sealed results with `as?` casts (`EmailLoginResultCodeSent`, …). State holders
+exposing flows will use `StateFlowWatcher.watch(onEach:)` and close the returned `Closeable` in `deinit`.

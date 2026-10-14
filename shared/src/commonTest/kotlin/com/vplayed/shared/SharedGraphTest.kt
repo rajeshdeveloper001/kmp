@@ -5,6 +5,7 @@ import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.error.DataResult
 import com.vplayed.shared.core.network.AuthTokens
 import com.vplayed.shared.core.network.FakeDeviceInfo
+import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RecordingEngine
 import com.vplayed.shared.core.network.testConfig
 import com.vplayed.shared.core.platform.NoOpLogger
@@ -19,6 +20,7 @@ import kotlin.test.assertTrue
 class SharedGraphTest {
 
     private val recorder = RecordingEngine()
+    private val credentials = InMemoryRequestCredentials()
 
     private fun graph(config: SharedConfig = testConfig()) = SharedGraph(
         config,
@@ -27,13 +29,14 @@ class SharedGraphTest {
             logger = NoOpLogger,
             engineFactory = { recorder.engine },
             cryptoPrimitives = platformCryptoPrimitives(),
+            requestCredentials = credentials,
         ),
     )
 
     @Test
     fun givenGraph_whenCredentialsChange_thenBackendRequestsCarryThem() = runTest {
         val graph = graph()
-        graph.requestCredentials.setAuthTokens(AuthTokens("access-abc"))
+        credentials.setAuthTokens(AuthTokens("access-abc"))
 
         val result = graph.apiCaller.get("mediaview/api/v1/home")
 
