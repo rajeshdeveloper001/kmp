@@ -1,11 +1,13 @@
 # SharedKmp — VPlayed shared business logic
 
 Kotlin Multiplatform library (`:shared`) holding the business logic both VPlayed apps use:
-networking, request encryption, models, validation, and later auth, session and Home. **No UI
+networking, request encryption, models, validation, sign-in, Home, geo restriction and launch
+settings, and later the session. **No UI
 lives here.** Screens stay native: Jetpack Compose in `AndroidJP`, SwiftUI in `VPlayed`.
 
 The plan and its decisions are in `../KMP_PLANNING/` (architecture, API mapping, storage, migration
-plan, backlog). Done so far: Phase 2 (foundation) and Phase 3 (sign-in, `auth/`), used by both apps.
+plan, backlog). Done so far: Phase 2 (foundation), Phase 3 (sign-in, `auth/`) and Phase 4 (Home,
+geo restriction, launch settings: `home/`, `geo/`, `settings/`), used by both apps.
 
 ## Targets
 
@@ -54,11 +56,20 @@ commonMain/kotlin/com/vplayed/shared/
                             verifyEmailLogin, generate, logout; status rules D1–D5 in its KDoc), result types,
                             EmailLoginController / OtpController (the sign-in flow: state, intents, effects),
                             AuthFlowConfig, AuthMessage / AuthMessageKey (text stays in the apps)
+  home/                     HomeRepository + DefaultHomeRepository (homebanners, home, home/all/{id},
+                            follow_studio; read rule D6), HomeMapper (lenient JSON → models; per-app image
+                            table HomeImagePolicy D12, price D13, AccessTag D14, live keys D10, bundle colour
+                            D11), HomeModels, HomeFeedController (first load, paging, empty-page skip D9,
+                            row paging D8, refresh, follow)
+  geo/                      GeoStore (IP, geo token, currency, location), GeoRepository (ipify → geo-data,
+                            serialized, outcomes for retry decisions; D18: the apps decide when), GeoTokenDecoder
+  settings/                 CommonSettings + CommonSettingsRepository (`mediaview/api/v1/common`, update
+                            details of this app's platform only)
   validation/               EmailValidator
   session/                  SecureStore interface (implemented per platform in Phase 5)
 androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
 appleMain/                  Darwin engine, CommonCrypto, NSLog, FlowWatcher / StateFlowWatcher (Swift bridge),
-                            controller watchState / watchEffects / currentState for Swift
+                            controller watchState / watchEffects / currentState for Swift (auth, Home)
 commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
 ```
 
@@ -83,11 +94,15 @@ commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
 
 | App | How it links | What uses the shared layer |
 |---|---|---|
-| AndroidJP | `includeBuild("../kmp")` with a substitution for `com.vplayed:shared`; Hilt `@Provides @Singleton SharedGraph` (`core/shared/SharedModule`) | Login: `LoginViewModel` / `OtpViewModel` delegate to the controllers on `viewModelScope`; Hilt provides `SharedGraph.authRepository` |
-| VPlayed | `scripts/build-shared.sh` builds `Shared.xcframework` into the local `SharedKit` package (`binaryTarget`); `@preconcurrency import Shared` in adapter files | Login: `SharedLoginViewModel` on `SharedGraph.emailLoginController` / `otpController` (own main-thread scopes, closed with the screen); logout: `SharedAuthService`. visionOS has no Kotlin target and keeps Swift versions |
+| AndroidJP | `includeBuild("../kmp")` with a substitution for `com.vplayed:shared`; Hilt `@Provides @Singleton SharedGraph` (`core/shared/SharedModule`), which also gets the app's `GeoStore` | Login: `LoginViewModel` / `OtpViewModel` delegate to the controllers on `viewModelScope`. Home: `HomeViewModel` runs `HomeFeedController`, the UI uses the shared models. Geo: `GeoRefreshWorker` calls `GeoRepository`; both header stacks read `GeoStore` |
+| VPlayed | `scripts/build-shared.sh` builds `Shared.xcframework` into the local `SharedKit` package (`binaryTarget`); `@preconcurrency import Shared` in adapter files | Login: `SharedLoginViewModel` on `SharedGraph.emailLoginController` / `otpController` (own main-thread scopes, closed with the screen); logout: `SharedAuthService`. Home: `SharedHomeViewModel` on `homeFeedController()`, mapped to the Swift view structs by `SharedHomeMapping`. Launch: `SharedStartupService` (settings, geo). visionOS has no Kotlin target and keeps Swift versions |
 
 Swift adapters map sealed results with `as?` casts (`EmailLoginResultCodeSent`, …), read a
 controller's state with `currentState` (a `StateFlow` value is untyped in Swift), observe it with
 `watchState` / `watchEffects` and close the returned `Closeable`s and the controller together.
-Avoid Kotlin names Objective-C reserves (an enum entry `NEW_…` becomes `theNew…`) and nested
-types whose flattened Swift name collides with another type (`AuthMessage.Key` vs `AuthMessageKey`).
+Avoid Kotlin names Objective-C reserves (an enum entry `NEW_…` becomes `theNew…`; a property
+`description` becomes `description_`) and nested types whose flattened Swift name collides with
+another type (`AuthMessage.Key` vs `AuthMessageKey`). Name enum entries in UPPER_SNAKE_CASE: Swift
+gets `transientFailure` from `TRANSIENT_FAILURE`, but `transientfailure` from `TransientFailure`.
+Kotlin types that share a name with a VPlayed type (`HomeSection`, `ContentItem`, `CommonSettings`,
+`GeoInfo`, `Price`, `AccessTag`) are written `Shared.X` in Swift; app code sees its own type unqualified.

@@ -1,11 +1,15 @@
 package com.vplayed.shared.core.network
 
+import com.vplayed.shared.core.error.AppError
+import com.vplayed.shared.core.error.DataResult
+import com.vplayed.shared.core.error.HTTP_UNAUTHORIZED
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
 
 /**
  * The envelope every VPlayed API answers with (AndroidJP `ApiEnvelope` / `UserResponseDto`,
@@ -64,3 +68,21 @@ class VPlayedResponse(
         val HTTP_SUCCESS = 200..299
     }
 }
+
+/**
+ * The read rule for data endpoints (Home, settings): decision D1 — a non-2xx HTTP status fails —
+ * and decision D6 — within 2xx the envelope's `statusCode`, when present, must be 200 (`status`
+ * is advisory). Returns the `response` object, or the failure: [AppError.Unauthorized] for 401,
+ * [AppError.Server] with the server's message for other refusals, [AppError.Parsing] when the body
+ * is not an envelope with an object `response`.
+ */
+fun VPlayedResponse.requireResponse(): DataResult<JsonObject> {
+    val status = if (isHttpSuccess) effectiveStatusCode else httpStatus
+    return when {
+        status == HTTP_UNAUTHORIZED -> DataResult.Failure(AppError.Unauthorized)
+        status != HTTP_OK -> DataResult.Failure(AppError.Server(status, message))
+        else -> (envelope?.response as? JsonObject)?.let { DataResult.Success(it) } ?: DataResult.Failure(AppError.Parsing)
+    }
+}
+
+private const val HTTP_OK = 200

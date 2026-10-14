@@ -19,6 +19,16 @@ import com.vplayed.shared.core.platform.DeviceInfo
 import com.vplayed.shared.core.platform.SharedLogger
 import com.vplayed.shared.core.platform.platformLogger
 import com.vplayed.shared.core.serialization.SharedJson
+import com.vplayed.shared.geo.DefaultGeoRepository
+import com.vplayed.shared.geo.GeoRepository
+import com.vplayed.shared.geo.GeoStore
+import com.vplayed.shared.home.DefaultHomeRepository
+import com.vplayed.shared.home.HomeFeedController
+import com.vplayed.shared.home.HomeImagePolicy
+import com.vplayed.shared.home.HomeMapper
+import com.vplayed.shared.home.HomeRepository
+import com.vplayed.shared.settings.CommonSettingsRepository
+import com.vplayed.shared.settings.DefaultCommonSettingsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +68,14 @@ class PlatformDependencies(
 class SharedGraph(
     val config: SharedConfig,
     private val platform: PlatformDependencies,
+    /**
+     * The geo token and location. Passed in because AndroidJP's request headers read it before the
+     * graph exists; VPlayed uses the one-argument constructor.
+     */
+    val geoStore: GeoStore,
 ) {
+    constructor(config: SharedConfig, platform: PlatformDependencies) : this(config, platform, GeoStore())
+
     val json: Json = SharedJson
 
     val logger: SharedLogger get() = platform.logger
@@ -96,6 +113,31 @@ class SharedGraph(
     /** A code-step controller with its own main-thread scope (see [emailLoginController]). */
     fun otpController(email: String, initialDeviceLimit: DeviceLimit?, config: AuthFlowConfig): OtpController =
         OtpController(email, authRepository, initialDeviceLimit, mainScope(), config)
+
+    /** Public IP → geo token → location, into [geoStore] (Phase 4). */
+    val geoRepository: GeoRepository by lazy {
+        DefaultGeoRepository(apiCaller, thirdPartyHttpClient, json, geoStore)
+    }
+
+    /** Launch-time app settings (`mediaview/api/v1/common`). */
+    val commonSettingsRepository: CommonSettingsRepository by lazy {
+        DefaultCommonSettingsRepository(apiCaller, config.platform)
+    }
+
+    /** Banners, rows, row items and channel follow (Phase 4). */
+    val homeRepository: HomeRepository by lazy {
+        DefaultHomeRepository(
+            api = apiCaller,
+            mapper = HomeMapper(
+                imageBaseUrl = config.imageBaseUrl,
+                imagePolicy = HomeImagePolicy.forPlatform(config.platform),
+                language = platform.deviceInfo::languageCode,
+            ),
+        )
+    }
+
+    /** A Home feed controller with its own main-thread scope (see [emailLoginController]). */
+    fun homeFeedController(): HomeFeedController = HomeFeedController(homeRepository, mainScope())
 
     private fun mainScope() = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 

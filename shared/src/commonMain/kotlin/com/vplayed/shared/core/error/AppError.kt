@@ -67,3 +67,15 @@ suspend fun <T> resultOf(block: suspend () -> T): DataResult<T> = try {
 } catch (error: Exception) {
     DataResult.Failure(error.toAppError())
 }
+
+/** Transforms the data of a success; a failure passes through. */
+inline fun <T, R> DataResult<T>.map(transform: (T) -> R): DataResult<R> = when (this) {
+    is DataResult.Success -> DataResult.Success(transform(data))
+    is DataResult.Failure -> this
+}
+
+/** Chains a call that itself returns a result; a failure passes through. */
+inline fun <T, R> DataResult<T>.flatMap(transform: (T) -> DataResult<R>): DataResult<R> = when (this) {
+    is DataResult.Success -> transform(data)
+    is DataResult.Failure -> this
+}
