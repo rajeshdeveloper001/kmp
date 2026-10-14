@@ -7,7 +7,6 @@ import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.error.AppError
 import com.vplayed.shared.core.error.DataResult
 import com.vplayed.shared.core.network.FakeDeviceInfo
-import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RecordingEngine
 import com.vplayed.shared.core.network.respondJson
 import com.vplayed.shared.core.network.testConfig
@@ -16,6 +15,7 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import com.vplayed.shared.session.testSessions
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -77,7 +77,8 @@ class CommonSettingsTest {
         val recorder = RecordingEngine { answers.removeFirst().let { (body, status) -> respondJson(body, status) } }
         val repository = SharedGraph(
             testConfig(),
-            PlatformDependencies(FakeDeviceInfo(), NoOpLogger, { recorder.engine }, platformCryptoPrimitives(), InMemoryRequestCredentials()),
+            PlatformDependencies(FakeDeviceInfo(), NoOpLogger, { recorder.engine }, platformCryptoPrimitives()),
+            testSessions(),
         ).commonSettingsRepository
 
         assertEquals(ContentLibrary.VOD, assertIs<DataResult.Success<CommonSettings>>(repository.load()).data.contentLibrary)

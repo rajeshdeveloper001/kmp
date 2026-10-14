@@ -12,12 +12,17 @@ data class RequestOptions(
     val sendGeoToken: Boolean = true,
     /** True when the request or response holds credentials, codes or personal data: only method and status are logged. */
     val redact: Boolean = false,
+    /**
+     * True when a 401 answer means the session's token is no longer valid, which ends the session
+     * (decision D21). False on the auth endpoints, which answer for the credentials in their body.
+     */
+    val endsSessionOnUnauthorized: Boolean = true,
 ) {
     companion object {
         val Default = RequestOptions()
 
-        /** Auth endpoints: bodies hold codes, tokens and emails. */
-        val Sensitive = RequestOptions(redact = true)
+        /** Auth endpoints: bodies hold codes, tokens and emails, and a 401 is about those, not the session. */
+        val Sensitive = RequestOptions(redact = true, endsSessionOnUnauthorized = false)
     }
 }
 

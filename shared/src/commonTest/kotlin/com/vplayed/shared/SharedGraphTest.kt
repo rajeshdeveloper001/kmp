@@ -3,12 +3,12 @@ package com.vplayed.shared
 import com.vplayed.shared.core.config.SharedConfig
 import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.error.DataResult
-import com.vplayed.shared.core.network.AuthTokens
 import com.vplayed.shared.core.network.FakeDeviceInfo
-import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RecordingEngine
 import com.vplayed.shared.core.network.testConfig
 import com.vplayed.shared.core.platform.NoOpLogger
+import com.vplayed.shared.session.testSession
+import com.vplayed.shared.session.testSessions
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -20,7 +20,6 @@ import kotlin.test.assertTrue
 class SharedGraphTest {
 
     private val recorder = RecordingEngine()
-    private val credentials = InMemoryRequestCredentials()
 
     private fun graph(config: SharedConfig = testConfig()) = SharedGraph(
         config,
@@ -29,14 +28,14 @@ class SharedGraphTest {
             logger = NoOpLogger,
             engineFactory = { recorder.engine },
             cryptoPrimitives = platformCryptoPrimitives(),
-            requestCredentials = credentials,
         ),
+        testSessions(),
     )
 
     @Test
-    fun givenGraph_whenCredentialsChange_thenBackendRequestsCarryThem() = runTest {
+    fun givenGraph_whenSignedIn_thenBackendRequestsCarryTheSession() = runTest {
         val graph = graph()
-        credentials.setAuthTokens(AuthTokens("access-abc"))
+        graph.sessionManager.signIn(testSession("access-abc"))
 
         val result = graph.apiCaller.get("mediaview/api/v1/home")
 

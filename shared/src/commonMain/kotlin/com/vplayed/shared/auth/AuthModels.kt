@@ -3,8 +3,8 @@ package com.vplayed.shared.auth
 import com.vplayed.shared.core.error.AppError
 
 /**
- * A signed-in or guest session returned by a login call. The apps store it (AndroidJP
- * `SessionRepository`, VPlayed `SessionStore`) until the shared session manager exists (Phase 5).
+ * A signed-in or guest session returned by a login call. The app hands it to
+ * `SessionManager.signIn` when its flow is done, which stores it (`SessionCodec` format).
  * The tokens are credentials: [toString] never prints them.
  */
 data class AuthSession(

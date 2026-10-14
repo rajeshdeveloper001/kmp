@@ -39,6 +39,9 @@ class VPlayedResponse(
     /** The envelope's `statusCode` when present, else the HTTP status (VPlayed's `APIClient` rule). */
     val effectiveStatusCode: Int get() = envelope?.statusCode ?: httpStatus
 
+    /** The status that decides the outcome (D1): the HTTP status when it is not 2xx, else [effectiveStatusCode]. */
+    val outcomeStatus: Int get() = if (isHttpSuccess) effectiveStatusCode else httpStatus
+
     /** The server's message, trimmed; null when absent or blank. */
     val message: String? get() = envelope?.message?.trim()?.takeIf { it.isNotEmpty() }
 
@@ -77,7 +80,7 @@ class VPlayedResponse(
  * is not an envelope with an object `response`.
  */
 fun VPlayedResponse.requireResponse(): DataResult<JsonObject> {
-    val status = if (isHttpSuccess) effectiveStatusCode else httpStatus
+    val status = outcomeStatus
     return when {
         status == HTTP_UNAUTHORIZED -> DataResult.Failure(AppError.Unauthorized)
         status != HTTP_OK -> DataResult.Failure(AppError.Server(status, message))

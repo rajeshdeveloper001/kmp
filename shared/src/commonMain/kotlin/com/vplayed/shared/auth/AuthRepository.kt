@@ -60,7 +60,8 @@ interface AuthRepository {
  *   app did. Only AndroidJP calls it; VPlayed keeps it off until the backend confirms it is safe.
  *
  * Request bodies hold emails, codes and tokens, so every call is [RequestOptions.Sensitive] and
- * nothing about them is logged. The session is returned, not stored: the apps own it until Phase 5.
+ * nothing about them is logged. The session is returned, not stored: callers hand it to
+ * `SessionManager.signIn`; [logout] does not end it (`SharedGraph.logout` does).
  */
 class DefaultAuthRepository internal constructor(
     private val api: ApiCaller,

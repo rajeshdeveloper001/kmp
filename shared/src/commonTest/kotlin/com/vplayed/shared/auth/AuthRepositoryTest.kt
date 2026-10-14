@@ -5,9 +5,7 @@ import com.vplayed.shared.SharedGraph
 import com.vplayed.shared.core.config.SharedConfig
 import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.error.AppError
-import com.vplayed.shared.core.network.AuthTokens
 import com.vplayed.shared.core.network.FakeDeviceInfo
-import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RecordingEngine
 import com.vplayed.shared.core.network.testConfig
 import com.vplayed.shared.core.platform.NoOpLogger
@@ -24,6 +22,8 @@ import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import com.vplayed.shared.session.testSession
+import com.vplayed.shared.session.testSessions
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -39,7 +39,6 @@ class AuthRepositoryTest {
         val (status, body) = answers.removeFirst()
         respond(body, HttpStatusCode.fromValue(status), headersOf(HttpHeaders.ContentType, "application/json"))
     }
-    private val credentials = InMemoryRequestCredentials()
 
     private fun graph(config: SharedConfig = testConfig(), deviceId: String? = "device-123") = SharedGraph(
         config,
@@ -48,8 +47,8 @@ class AuthRepositoryTest {
             logger = NoOpLogger,
             engineFactory = { recorder.engine },
             cryptoPrimitives = platformCryptoPrimitives(),
-            requestCredentials = credentials,
         ),
+        testSessions(),
     )
 
     private val graph = graph()
@@ -174,7 +173,8 @@ class AuthRepositoryTest {
         val offline = RecordingEngine { throw IOException("connection reset") }
         val repository = SharedGraph(
             testConfig(),
-            PlatformDependencies(FakeDeviceInfo(), NoOpLogger, { offline.engine }, platformCryptoPrimitives(), credentials),
+            PlatformDependencies(FakeDeviceInfo(), NoOpLogger, { offline.engine }, platformCryptoPrimitives()),
+            testSessions(),
         ).authRepository
 
         assertEquals(EmailLoginResult.Failure(AppError.Network), repository.requestEmailLogin(EMAIL))
@@ -232,8 +232,8 @@ class AuthRepositoryTest {
         val result = repository.verifyEmailOtp(EMAIL, "123456")
 
         assertEquals(OtpVerificationResult.Verified(expectedSession, isNewUser = false, hasMultipleProfiles = false), result)
-        // The apps own the session in Phase 3: the repository does not touch the request credentials.
-        assertNull(credentials.authTokens)
+        // The repository returns the session; storing it is the caller's `SessionManager.signIn`.
+        assertNull(graph.sessionManager.session)
     }
 
     @Test
@@ -434,7 +434,7 @@ class AuthRepositoryTest {
 
     @Test
     fun givenSignedIn_whenLoggingOut_thenPostsEmptyBodyWithTheSessionToken() = runTest {
-        credentials.setAuthTokens(AuthTokens("access-1"))
+        graph.sessionManager.signIn(testSession("access-1"))
         answer(200, """{"statusCode":200,"message":"Logged out"}""")
 
         assertEquals(LogoutResult.LoggedOut, repository.logout())

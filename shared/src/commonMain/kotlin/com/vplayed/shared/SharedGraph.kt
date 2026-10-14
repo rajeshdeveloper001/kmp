@@ -11,8 +11,8 @@ import com.vplayed.shared.auth.AuthRepository
 import com.vplayed.shared.auth.DefaultAuthRepository
 import com.vplayed.shared.auth.DeviceLimit
 import com.vplayed.shared.auth.EmailLoginController
+import com.vplayed.shared.auth.LogoutResult
 import com.vplayed.shared.auth.OtpController
-import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RequestCredentials
 import com.vplayed.shared.core.network.createPlatformHttpEngine
 import com.vplayed.shared.core.platform.DeviceInfo
@@ -27,6 +27,8 @@ import com.vplayed.shared.home.HomeFeedController
 import com.vplayed.shared.home.HomeImagePolicy
 import com.vplayed.shared.home.HomeMapper
 import com.vplayed.shared.home.HomeRepository
+import com.vplayed.shared.session.SessionCredentials
+import com.vplayed.shared.session.SessionManager
 import com.vplayed.shared.settings.CommonSettingsRepository
 import com.vplayed.shared.settings.DefaultCommonSettingsRepository
 import io.ktor.client.HttpClient
@@ -43,20 +45,13 @@ class PlatformDependencies(
     /** Called once per HTTP client; tests pass a `MockEngine`. */
     val engineFactory: () -> HttpClientEngine,
     val cryptoPrimitives: CryptoPrimitives,
-    /**
-     * Session and geo credentials for request headers. AndroidJP reads its own session and geo
-     * stores live; VPlayed passes an [InMemoryRequestCredentials] that its `SessionStore` updates.
-     * The apps own the session until the shared session manager (Phase 5).
-     */
-    val requestCredentials: RequestCredentials,
 ) {
-    /** Platform defaults: system log, OkHttp / Darwin engine, javax.crypto / CommonCrypto, in-memory credentials. */
+    /** Platform defaults: system log, OkHttp / Darwin engine, javax.crypto / CommonCrypto. */
     constructor(deviceInfo: DeviceInfo) : this(
         deviceInfo = deviceInfo,
         logger = platformLogger(),
         engineFactory = ::createPlatformHttpEngine,
         cryptoPrimitives = platformCryptoPrimitives(),
-        requestCredentials = InMemoryRequestCredentials(),
     )
 }
 
@@ -69,19 +64,22 @@ class SharedGraph(
     val config: SharedConfig,
     private val platform: PlatformDependencies,
     /**
-     * The geo token and location. Passed in because AndroidJP's request headers read it before the
-     * graph exists; VPlayed uses the one-argument constructor.
+     * The signed-in or guest session (Phase 5), created by the app over its secure storage. Passed in,
+     * like [geoStore], because AndroidJP's request headers read it before the graph exists.
      */
+    val sessionManager: SessionManager,
+    /** The geo token and location. VPlayed uses the constructor without it. */
     val geoStore: GeoStore,
 ) {
-    constructor(config: SharedConfig, platform: PlatformDependencies) : this(config, platform, GeoStore())
+    constructor(config: SharedConfig, platform: PlatformDependencies, sessionManager: SessionManager) :
+        this(config, platform, sessionManager, GeoStore())
 
     val json: Json = SharedJson
 
     val logger: SharedLogger get() = platform.logger
 
-    /** Where request headers read the session and geo token from (supplied by the app). */
-    val requestCredentials: RequestCredentials get() = platform.requestCredentials
+    /** What request headers send: [sessionManager]'s tokens and [geoStore]'s geo token. */
+    val requestCredentials: RequestCredentials by lazy { SessionCredentials(sessionManager, geoStore) }
 
     val transportCipher: TransportCipher by lazy { TransportCipher(platform.cryptoPrimitives) }
 
@@ -95,7 +93,7 @@ class SharedGraph(
         HttpClientFactory.thirdParty(platform.engineFactory(), config, platform.logger)
     }
 
-    val apiCaller: ApiCaller by lazy { ApiCaller(backendHttpClient, json) }
+    val apiCaller: ApiCaller by lazy { ApiCaller(backendHttpClient, json, sessionManager) }
 
     /** Email sign-in, device limit, guest login and logout (Phase 3). */
     val authRepository: AuthRepository by lazy {
@@ -113,6 +111,9 @@ class SharedGraph(
     /** A code-step controller with its own main-thread scope (see [emailLoginController]). */
     fun otpController(email: String, initialDeviceLimit: DeviceLimit?, config: AuthFlowConfig): OtpController =
         OtpController(email, authRepository, initialDeviceLimit, mainScope(), config)
+
+    /** [SessionManager.logout] with this graph's [authRepository]. */
+    suspend fun logout(): LogoutResult = sessionManager.logout(authRepository)
 
     /** Public IP → geo token → location, into [geoStore] (Phase 4). */
     val geoRepository: GeoRepository by lazy {

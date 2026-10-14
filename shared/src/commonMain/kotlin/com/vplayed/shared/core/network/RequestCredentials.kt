@@ -22,9 +22,8 @@ interface RequestCredentials {
 }
 
 /**
- * Thread-safe in-memory [RequestCredentials], for an app that cannot read its stores synchronously
- * (VPlayed's `SessionStore` is an actor): the app sets these whenever its session or geo token
- * changes, until the shared session manager (Phase 5) owns them.
+ * Thread-safe in-memory [RequestCredentials], for tests of the HTTP layer. The graph's credentials
+ * come from its `SessionManager` and `GeoStore`.
  */
 class InMemoryRequestCredentials : RequestCredentials {
     private val auth = MutableStateFlow<AuthTokens?>(null)

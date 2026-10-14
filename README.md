@@ -1,13 +1,14 @@
 # SharedKmp — VPlayed shared business logic
 
 Kotlin Multiplatform library (`:shared`) holding the business logic both VPlayed apps use:
-networking, request encryption, models, validation, sign-in, Home, geo restriction and launch
-settings, and later the session. **No UI
+networking, request encryption, models, validation, sign-in, Home, geo restriction, launch
+settings and the session. **No UI
 lives here.** Screens stay native: Jetpack Compose in `AndroidJP`, SwiftUI in `VPlayed`.
 
 The plan and its decisions are in `../KMP_PLANNING/` (architecture, API mapping, storage, migration
-plan, backlog). Done so far: Phase 2 (foundation), Phase 3 (sign-in, `auth/`) and Phase 4 (Home,
-geo restriction, launch settings: `home/`, `geo/`, `settings/`), used by both apps.
+plan, backlog). Done so far: Phase 2 (foundation), Phase 3 (sign-in, `auth/`), Phase 4 (Home,
+geo restriction, launch settings: `home/`, `geo/`, `settings/`) and Phase 5 (session: `session/`),
+used by both apps.
 
 ## Targets
 
@@ -66,7 +67,8 @@ commonMain/kotlin/com/vplayed/shared/
   settings/                 CommonSettings + CommonSettingsRepository (`mediaview/api/v1/common`, update
                             details of this app's platform only)
   validation/               EmailValidator
-  session/                  SecureStore interface (implemented per platform in Phase 5)
+  session/                  SessionManager (restore, sign-in/out, 401 → expired), SessionCodec (reads both apps'
+                            old formats), SecureStore / BlockingSecureStore / DispatchingSecureStore / InMemorySecureStore
 androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
 appleMain/                  Darwin engine, CommonCrypto, NSLog, FlowWatcher / StateFlowWatcher (Swift bridge),
                             controller watchState / watchEffects / currentState for Swift (auth, Home)
@@ -81,9 +83,14 @@ commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test)
 - **Status codes carry meaning.** HTTP clients use `expectSuccess = false`, and repositories read both
   `VPlayedResponse.httpStatus` and `effectiveStatusCode`. Decision D1: a non-2xx HTTP status always
   fails; within 2xx the envelope's `statusCode` decides when present (`authStatus`).
-- **The apps own the session until Phase 5.** Repositories return sessions; they don't store them.
-  Request headers read credentials through the `RequestCredentials` the app supplies in
-  `PlatformDependencies` (AndroidJP reads its stores live; VPlayed mirrors its `SessionStore`).
+- **`SessionManager` owns the session.** Each app creates one over its secure storage (AndroidJP
+  `KeystoreSecureStore`; VPlayed `KeychainSecureStore` through `DispatchingSecureStore`) and passes
+  it to `SharedGraph`, like the `GeoStore`. Repositories return sessions; the app calls
+  `SessionManager.signIn` when its flow is done. Every backend request waits for the stored session
+  to be read, then sends its tokens and the `GeoStore` geo token. A 401 (HTTP or envelope) on a
+  request that carried the token ends the session (decision D21), except on auth endpoints
+  (`RequestOptions.endsSessionOnUnauthorized`). `SessionManager.logout(authRepository)` (or
+  `SharedGraph.logout()`) ends it after the server agrees; both apps' sign-out entries use it.
 - **No secrets or personal data in logs or `toString()`.** Use `RequestOptions.Sensitive` for auth calls.
   `AuthTokens`, `SharedConfig` and `VPlayedResponse` mask their contents.
 - **User-facing text stays native.** Shared code returns typed results or message keys. Android maps

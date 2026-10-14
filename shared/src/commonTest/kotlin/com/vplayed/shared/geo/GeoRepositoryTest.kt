@@ -4,7 +4,6 @@ import com.vplayed.shared.PlatformDependencies
 import com.vplayed.shared.SharedGraph
 import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.network.FakeDeviceInfo
-import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RecordingEngine
 import com.vplayed.shared.core.network.testConfig
 import com.vplayed.shared.core.platform.NoOpLogger
@@ -19,6 +18,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import kotlinx.io.IOException
+import com.vplayed.shared.session.testSessions
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -45,8 +45,6 @@ class GeoRepositoryTest {
         }
     }
 
-    private val credentials = InMemoryRequestCredentials().apply { setGeoToken("old-token") }
-
     private val graph = SharedGraph(
         testConfig(),
         PlatformDependencies(
@@ -54,8 +52,8 @@ class GeoRepositoryTest {
             logger = NoOpLogger,
             engineFactory = { recorder.engine },
             cryptoPrimitives = platformCryptoPrimitives(),
-            requestCredentials = credentials,
         ),
+        testSessions(),
     )
     private val repository = graph.geoRepository
     private val store get() = graph.geoStore
@@ -73,6 +71,7 @@ class GeoRepositoryTest {
 
     @Test
     fun givenRequests_whenRefreshing_thenTheIpLookupGetsNoAppHeadersAndGeoDataNoOldToken() = runTest {
+        store.updateGeo("old-token", null)
         repository.refresh()
 
         val lookup = recorder.requests.first()

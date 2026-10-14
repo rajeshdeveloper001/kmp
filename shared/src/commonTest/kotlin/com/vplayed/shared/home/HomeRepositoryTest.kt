@@ -6,7 +6,6 @@ import com.vplayed.shared.core.crypto.platformCryptoPrimitives
 import com.vplayed.shared.core.error.AppError
 import com.vplayed.shared.core.error.DataResult
 import com.vplayed.shared.core.network.FakeDeviceInfo
-import com.vplayed.shared.core.network.InMemoryRequestCredentials
 import com.vplayed.shared.core.network.RecordingEngine
 import com.vplayed.shared.core.network.testConfig
 import com.vplayed.shared.core.platform.NoOpLogger
@@ -19,6 +18,7 @@ import io.ktor.http.headersOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
+import com.vplayed.shared.session.testSessions
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -39,8 +39,8 @@ class HomeRepositoryTest {
             logger = NoOpLogger,
             engineFactory = { recorder.engine },
             cryptoPrimitives = platformCryptoPrimitives(),
-            requestCredentials = InMemoryRequestCredentials(),
         ),
+        testSessions(),
     ).homeRepository
 
     private fun answer(body: String, status: Int = 200) = answers.addLast(status to body)
