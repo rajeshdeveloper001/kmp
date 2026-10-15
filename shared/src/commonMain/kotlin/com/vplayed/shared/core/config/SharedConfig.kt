@@ -37,8 +37,8 @@ class SharedConfig(
     val serverUrl: String,
     /** Base for relative image paths returned by the API, with a trailing slash. */
     val imageBaseUrl: String,
-    /** Request logging; never enabled in stage, demo or production builds. */
-    val loggingEnabled: Boolean,
+    /** Request logging; defaults to true in non-production builds (dev, qa, stage, demo). */
+    val loggingEnabled: Boolean = !environment.isProduction,
     /** Sent as `app_version`. */
     val appVersion: String,
     val platform: ClientPlatform,

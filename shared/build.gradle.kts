@@ -12,6 +12,15 @@ plugins {
 group = "com.vplayed"
 version = "0.1.0"
 
+publishing {
+    repositories {
+        maven {
+            name = "LocalRepo"
+            url = uri(rootProject.layout.projectDirectory.dir("repo/localMaven"))
+        }
+    }
+}
+
 kotlin {
     // One XCFramework for the VPlayed target: iOS device and iOS simulator (with the Intel slice for
     // universal simulator builds). VPlayed runs on Apple-silicon Macs and Apple Vision Pro as the iPad

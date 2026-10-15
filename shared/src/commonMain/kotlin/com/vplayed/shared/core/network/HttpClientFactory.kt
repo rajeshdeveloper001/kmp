@@ -27,7 +27,6 @@ object HttpClientFactory {
         credentials: RequestCredentials,
         logger: SharedLogger,
     ): HttpClient = HttpClient(engine) {
-        common(config, logger)
         defaultRequest { url(config.serverUrl) }
         install(VPlayedHeaders) {
             platform = config.platform
@@ -35,6 +34,7 @@ object HttpClientFactory {
             this.deviceInfo = deviceInfo
             this.credentials = credentials
         }
+        common(config, logger)
     }
 
     /**

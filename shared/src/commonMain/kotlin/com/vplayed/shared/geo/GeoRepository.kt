@@ -7,6 +7,7 @@ import com.vplayed.shared.core.error.resultOf
 import com.vplayed.shared.core.network.ApiCaller
 import com.vplayed.shared.core.network.RequestOptions
 import com.vplayed.shared.core.network.VPlayedResponse
+import com.vplayed.shared.core.network.requestOptions
 import com.vplayed.shared.core.serialization.lenientString
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -69,7 +70,9 @@ internal class DefaultGeoRepository(
     }
 
     private suspend fun publicIp(): DataResult<String?> = resultOf {
-        val response = thirdPartyClient.get(PUBLIC_IP_URL)
+        val response = thirdPartyClient.get(PUBLIC_IP_URL) {
+            requestOptions(RequestOptions(redact = true))
+        }
         if (response.status.value !in 200..299) throw ApiException(response.status.value, null)
         (json.parseToJsonElement(response.bodyAsText()) as? JsonObject)?.get("ip").lenientString()
     }

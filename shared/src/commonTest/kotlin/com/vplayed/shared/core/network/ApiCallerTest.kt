@@ -135,22 +135,34 @@ class ApiCallerTest {
     }
 
     @Test
-    fun givenLoggingEnabled_whenRequesting_thenOneLineWithoutSecretsAndRedactedPaths() = runTest {
+    fun givenLoggingEnabled_whenRequesting_thenLogsRequestAndFormattedResponseWithoutSecrets() = runTest {
         val lines = mutableListOf<String>()
         val logger = object : SharedLogger {
             override fun debug(tag: String, message: String) { lines += message }
             override fun info(tag: String, message: String) { lines += message }
             override fun error(tag: String, message: String, throwable: Throwable?) { lines += message }
         }
-        val recorder = RecordingEngine()
+        val recorder = RecordingEngine {
+            respondJson("""{"error":false,"statusCode":200,"message":"Success","response":{"title":"Home"}}""")
+        }
         val api = caller(recorder, logger, logging = true)
 
         api.get("mediaview/api/v1/home")
         api.postJson("users/api/v1/auth/verifyEmailOtp", buildJsonObject { put("data", "secret-cipher") }, RequestOptions.Sensitive)
 
-        assertEquals(2, lines.size)
-        assertTrue(lines[0].startsWith("GET /mediaview/api/v1/home -> 200"), lines[0])
-        assertTrue(lines[1].startsWith("POST <redacted> -> 200"), lines[1])
+        assertEquals(4, lines.size)
+        // Normal GET request
+        assertTrue(lines[0].startsWith("--> GET https://api.test.invalid/mediaview/api/v1/home"), lines[0])
+        assertTrue("Accept: application/json" in lines[0], lines[0])
+        // Normal GET response with formatted JSON
+        assertTrue(lines[1].startsWith("<-- 200 OK GET https://api.test.invalid/mediaview/api/v1/home"), lines[1])
+        assertTrue("Response Body:\n{\n  \"error\": false," in lines[1], lines[1])
+        assertTrue("\"title\": \"Home\"" in lines[1], lines[1])
+        // Sensitive POST request: redacted target, no secret in body
+        assertTrue(lines[2].startsWith("--> POST <redacted>"), lines[2])
+        // Sensitive POST response: redacted target and body
+        assertTrue(lines[3].startsWith("<-- 200 OK POST <redacted>"), lines[3])
+        assertTrue("Body: <redacted>" in lines[3], lines[3])
         assertFalse(lines.any { "secret-cipher" in it })
     }
 }
