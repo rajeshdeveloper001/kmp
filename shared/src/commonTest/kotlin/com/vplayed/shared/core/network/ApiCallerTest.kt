@@ -28,8 +28,19 @@ import kotlin.test.assertTrue
 
 class ApiCallerTest {
 
-    private fun caller(recorder: RecordingEngine, logger: SharedLogger = NoOpLogger, logging: Boolean = false) = ApiCaller(
-        HttpClientFactory.backend(recorder.engine, testConfig(loggingEnabled = logging), FakeDeviceInfo(), InMemoryRequestCredentials(), logger),
+    private fun caller(
+        recorder: RecordingEngine,
+        logger: SharedLogger = NoOpLogger,
+        logging: Boolean = false,
+        redactSensitive: Boolean = false,
+    ) = ApiCaller(
+        HttpClientFactory.backend(
+            recorder.engine,
+            testConfig(loggingEnabled = logging, redactSensitive = redactSensitive),
+            FakeDeviceInfo(),
+            InMemoryRequestCredentials(),
+            logger,
+        ),
         SharedJson,
     )
 
@@ -135,7 +146,7 @@ class ApiCallerTest {
     }
 
     @Test
-    fun givenLoggingEnabled_whenRequesting_thenLogsRequestAndFormattedResponseWithoutSecrets() = runTest {
+    fun givenDevOrQaBuild_whenLoggingEnabled_thenAuthAndDataLogsAreFullyPrinted() = runTest {
         val lines = mutableListOf<String>()
         val logger = object : SharedLogger {
             override fun debug(tag: String, message: String) { lines += message }
@@ -145,24 +156,66 @@ class ApiCallerTest {
         val recorder = RecordingEngine {
             respondJson("""{"error":false,"statusCode":200,"message":"Success","response":{"title":"Home"}}""")
         }
-        val api = caller(recorder, logger, logging = true)
+        val api = caller(recorder, logger, logging = true, redactSensitive = false)
 
         api.get("mediaview/api/v1/home")
-        api.postJson("users/api/v1/auth/verifyEmailOtp", buildJsonObject { put("data", "secret-cipher") }, RequestOptions.Sensitive)
+        api.postJson("users/api/v1/auth/verifyEmailOtp", buildJsonObject { put("data", "test-cipher") }, RequestOptions.Sensitive)
 
         assertEquals(4, lines.size)
-        // Normal GET request
+        // Normal GET request & response
         assertTrue(lines[0].startsWith("--> GET https://api.test.invalid/mediaview/api/v1/home"), lines[0])
         assertTrue("Accept: application/json" in lines[0], lines[0])
-        // Normal GET response with formatted JSON
         assertTrue(lines[1].startsWith("<-- 200 OK GET https://api.test.invalid/mediaview/api/v1/home"), lines[1])
         assertTrue("Response Body:\n{\n  \"error\": false," in lines[1], lines[1])
-        assertTrue("\"title\": \"Home\"" in lines[1], lines[1])
-        // Sensitive POST request: redacted target, no secret in body
-        assertTrue(lines[2].startsWith("--> POST <redacted>"), lines[2])
-        // Sensitive POST response: redacted target and body
-        assertTrue(lines[3].startsWith("<-- 200 OK POST <redacted>"), lines[3])
-        assertTrue("Body: <redacted>" in lines[3], lines[3])
+
+        // Auth POST in dev/qa: complete URL and body are visible, NOT <redacted>
+        assertTrue(lines[2].startsWith("--> POST https://api.test.invalid/users/api/v1/auth/verifyEmailOtp"), lines[2])
+        assertTrue("\"data\": \"test-cipher\"" in lines[2], lines[2])
+        assertTrue(lines[3].startsWith("<-- 200 OK POST https://api.test.invalid/users/api/v1/auth/verifyEmailOtp"), lines[3])
+        assertTrue("Response Body:\n{\n  \"error\": false," in lines[3], lines[3])
+    }
+
+    @Test
+    fun givenProductionBuild_whenLoggingEnabled_thenSensitiveEndpointsAreRedacted() = runTest {
+        val lines = mutableListOf<String>()
+        val logger = object : SharedLogger {
+            override fun debug(tag: String, message: String) { lines += message }
+            override fun info(tag: String, message: String) { lines += message }
+            override fun error(tag: String, message: String, throwable: Throwable?) { lines += message }
+        }
+        val recorder = RecordingEngine {
+            respondJson("""{"error":false,"statusCode":200,"message":"Success","response":{"title":"Home"}}""")
+        }
+        val api = caller(recorder, logger, logging = true, redactSensitive = true)
+
+        api.postJson("users/api/v1/auth/verifyEmailOtp", buildJsonObject { put("data", "secret-cipher") }, RequestOptions.Sensitive)
+
+        assertEquals(2, lines.size)
+        assertTrue(lines[0].startsWith("--> POST <redacted>"), lines[0])
+        assertFalse("secret-cipher" in lines[0], lines[0])
+        assertTrue(lines[1].startsWith("<-- 200 OK POST <redacted>"), lines[1])
+        assertTrue("Body: <redacted>" in lines[1], lines[1])
         assertFalse(lines.any { "secret-cipher" in it })
+    }
+
+    @Test
+    fun givenLargeJsonResponse_whenLogged_thenAllChunksAreLoggedWithoutTruncation() = runTest {
+        val lines = mutableListOf<String>()
+        val logger = object : SharedLogger {
+            override fun debug(tag: String, message: String) { lines += message }
+            override fun info(tag: String, message: String) { lines += message }
+            override fun error(tag: String, message: String, throwable: Throwable?) { lines += message }
+        }
+        val items = (1..50).joinToString(",") { i -> """{"id":$i,"title":"Item number $i with extra padding text to make it longer"}""" }
+        val largeJson = """{"error":false,"statusCode":200,"response":{"items":[$items]}}"""
+        val recorder = RecordingEngine { respondJson(largeJson) }
+        val api = caller(recorder, logger, logging = true)
+
+        val result = api.get("mediaview/api/v1/items").response()
+
+        assertEquals(largeJson, result.rawBody)
+        assertTrue(lines.size > 2, "Response should be chunked across multiple lines/chunks for large payloads")
+        assertTrue(lines.any { "Item number 1 with extra padding" in it })
+        assertTrue(lines.any { "Item number 50 with extra padding" in it })
     }
 }

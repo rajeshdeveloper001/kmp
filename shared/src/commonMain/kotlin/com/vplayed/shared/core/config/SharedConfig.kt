@@ -46,6 +46,8 @@ class SharedConfig(
     val transportKey: String = "",
     val requestTimeoutMillis: Long = DEFAULT_REQUEST_TIMEOUT_MILLIS,
     val connectTimeoutMillis: Long = DEFAULT_CONNECT_TIMEOUT_MILLIS,
+    /** Whether sensitive endpoints (auth credentials, tokens, public IP) are redacted in logs. Redacted in production only. */
+    val redactSensitive: Boolean = environment.isProduction,
 ) {
     init {
         listOf(serverUrl, imageBaseUrl).forEach { url ->

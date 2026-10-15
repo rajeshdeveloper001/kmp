@@ -75,7 +75,8 @@ class ApiCaller(
             requestOptions(options)
             configure()
         }
-        val answer = VPlayedResponse(httpStatus = response.status.value, envelope = parseEnvelope(response.bodyAsText()))
+        val rawBody = response.bodyAsText()
+        val answer = VPlayedResponse(httpStatus = response.status.value, envelope = parseEnvelope(rawBody), rawBody = rawBody)
         if (sessions != null && options.endsSessionOnUnauthorized && answer.outcomeStatus == HTTP_UNAUTHORIZED) {
             response.call.request.headers[HttpHeaders.Authorization]
                 ?.removePrefix(BEARER_PREFIX)

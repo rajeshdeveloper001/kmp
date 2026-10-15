@@ -53,7 +53,10 @@ object HttpClientFactory {
             connectTimeoutMillis = config.connectTimeoutMillis
         }
         if (config.loggingEnabled) {
-            install(RequestLogging) { this.logger = logger }
+            install(RequestLogging) {
+                this.logger = logger
+                this.redactSensitive = config.redactSensitive
+            }
         }
     }
 }

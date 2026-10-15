@@ -14,18 +14,22 @@ private object AppleLogger : SharedLogger {
 
     // The message goes in as an argument, never as the format string.
     private fun log(level: String, tag: String, message: String) {
-        if (message.length <= MAX_LOG_LENGTH) {
-            NSLog("%@", "[$level/$tag] $message")
-            return
-        }
         var start = 0
-        while (start < message.length) {
-            var end = (start + MAX_LOG_LENGTH).coerceAtMost(message.length)
-            val newline = message.lastIndexOf('\n', end)
-            if (newline > start && end < message.length) {
-                end = newline + 1
+        val len = message.length
+        while (start < len) {
+            val remaining = len - start
+            if (remaining <= MAX_LOG_LENGTH) {
+                val chunk = message.substring(start)
+                println("[$level/$tag] $chunk")
+                NSLog("%@", "[$level/$tag] $chunk")
+                break
             }
-            NSLog("%@", "[$level/$tag] ${message.substring(start, end)}")
+            val targetEnd = start + MAX_LOG_LENGTH
+            val newline = message.lastIndexOf('\n', targetEnd)
+            val end = if (newline > start) newline + 1 else targetEnd
+            val chunk = message.substring(start, end)
+            println("[$level/$tag] $chunk")
+            NSLog("%@", "[$level/$tag] $chunk")
             start = end
         }
     }

@@ -144,7 +144,7 @@ class EndpointContractTest {
             }
         }
         val graph = SharedGraph(
-            testConfig(loggingEnabled = true),
+            testConfig(loggingEnabled = true, redactSensitive = true),
             PlatformDependencies(FakeDeviceInfo(), logger, { recorder.engine }, platformCryptoPrimitives()),
             testSessions(stored = testSession(SESSION_TOKEN)),
         )

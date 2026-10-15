@@ -33,6 +33,8 @@ class VPlayedResponse(
     val httpStatus: Int,
     /** Null when the body is not a JSON envelope (empty, HTML error page, malformed). */
     val envelope: ApiEnvelope<JsonElement>?,
+    /** Raw response body text. */
+    val rawBody: String = "",
 ) {
     val isHttpSuccess: Boolean get() = httpStatus in HTTP_SUCCESS
 

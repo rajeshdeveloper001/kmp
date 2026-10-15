@@ -13,14 +13,19 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 
-internal fun testConfig(loggingEnabled: Boolean = false) = SharedConfig(
-    environment = ServerEnvironment.DEVELOPMENT,
+internal fun testConfig(
+    loggingEnabled: Boolean = false,
+    environment: ServerEnvironment = ServerEnvironment.DEVELOPMENT,
+    redactSensitive: Boolean = environment.isProduction,
+) = SharedConfig(
+    environment = environment,
     serverUrl = "https://api.test.invalid/",
     imageBaseUrl = "https://images.test.invalid/",
     loggingEnabled = loggingEnabled,
     appVersion = "3.0.0",
     platform = ClientPlatform.ANDROID,
     transportKey = "unit-test-passphrase",
+    redactSensitive = redactSensitive,
 )
 
 internal class FakeDeviceInfo(

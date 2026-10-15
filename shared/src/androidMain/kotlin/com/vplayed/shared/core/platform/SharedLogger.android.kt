@@ -15,21 +15,25 @@ private object AndroidLogger : SharedLogger {
         }
     }
 
-    private const val MAX_LOG_LENGTH = 4000
+    private const val MAX_LOG_LENGTH = 2000
 
     private inline fun log(tag: String, message: String, logFn: (String, String) -> Unit) {
-        if (message.length <= MAX_LOG_LENGTH) {
-            logFn(tag, message)
-            return
-        }
         var start = 0
-        while (start < message.length) {
-            var end = (start + MAX_LOG_LENGTH).coerceAtMost(message.length)
-            val newline = message.lastIndexOf('\n', end)
-            if (newline > start && end < message.length) {
-                end = newline + 1
+        val len = message.length
+        while (start < len) {
+            val remaining = len - start
+            if (remaining <= MAX_LOG_LENGTH) {
+                val chunk = message.substring(start)
+                logFn(tag, chunk)
+                println("$tag: $chunk")
+                break
             }
-            logFn(tag, message.substring(start, end))
+            val targetEnd = start + MAX_LOG_LENGTH
+            val newline = message.lastIndexOf('\n', targetEnd)
+            val end = if (newline > start) newline + 1 else targetEnd
+            val chunk = message.substring(start, end)
+            logFn(tag, chunk)
+            println("$tag: $chunk")
             start = end
         }
     }
