@@ -1,0 +1,18 @@
+[
+    {
+        "operation": "AES-256-CBC Encrypt + Decrypt",
+        "durationMs": 0,
+        "memoryAllocatedBytes": 2048,
+        "iterations": 100,
+        "thresholdMs": 50,
+        "status": "PASSED"
+    },
+    {
+        "operation": "Lenient JSON Parsing (500 iterations)",
+        "durationMs": 0,
+        "memoryAllocatedBytes": 4096,
+        "iterations": 500,
+        "thresholdMs": 5,
+        "status": "PASSED"
+    }
+]

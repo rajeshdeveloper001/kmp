@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="QualityFramework" tests="39" failures="0" skipped="0" time="0.031">
+  <testcase id="API-AUTH-001" name="users: Validate POST users/api/v1/auth/email-login request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.001">
+  </testcase>
+  <testcase id="API-AUTH-002" name="users: Validate POST users/api/v1/auth/verifyEmailOtp request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.002">
+  </testcase>
+  <testcase id="API-AUTH-003" name="users: Validate POST users/api/v1/auth/verifyEmailLogin request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-AUTH-004" name="users: Validate POST users/api/v1/auth/logout-device request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-AUTH-005" name="users: Validate POST users/api/v1/auth/generate request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-AUTH-006" name="users: Validate POST users/api/v1/auth/logout request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-HOME-001" name="mediaview: Validate GET mediaview/api/v1/homebanners request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.005">
+  </testcase>
+  <testcase id="API-HOME-002" name="mediaview: Validate GET mediaview/api/v1/home request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.004">
+  </testcase>
+  <testcase id="API-HOME-003" name="mediaview: Validate GET mediaview/api/v1/home/all/section-1 request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.002">
+  </testcase>
+  <testcase id="API-STUDIO-001" name="studios: Validate POST studios/api/v1/follow_studio request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-MOVIES-001" name="mediaview: Validate GET mediaview/api/v1/sho-details/media/1 request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-COMMON-001" name="mediaview: Validate GET mediaview/api/v1/common request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-GEO-001" name="mediaview: Validate GET mediaview/api/v1/common/geo-data/203.0.113.10 request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-IPIFY-001" name="https://api.ipify.org/?format=json: Validate GET https://api.ipify.org/?format=json request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
+  </testcase>
+  <testcase id="API-AUTH-OTP-REALTIME-SUCCESS" name="Authentication (Realtime): Match full real-time backend OTP success payload against client schema and field mappings" classname="com.vplayed.quality.API_CONTRACT" time="0.005">
+  </testcase>
+  <testcase id="API-AUTH-OTP-REALTIME-INVALID" name="Authentication (Realtime): Validate real-time backend OTP invalid response (HTTP 400, error: true, empty response object)" classname="com.vplayed.quality.API_CONTRACT" time="0.002">
+  </testcase>
+  <testcase id="API-HOME-BANNERS-REALTIME" name="Home Feed & Banners: Match full real-time backend homebanners payload (3 banners) against client schema and field mappings" classname="com.vplayed.quality.API_CONTRACT" time="0.003">
+  </testcase>
+  <testcase id="LOGIC-AUTH-001" name="Authentication Logic: Input malformed email and lose field focus" classname="com.vplayed.quality.APP_LOGIC" time="0.0">
+  </testcase>
+  <testcase id="LOGIC-AUTH-002" name="Authentication Logic: Verify OTP code length constraint (must be exactly 6 digits)" classname="com.vplayed.quality.APP_LOGIC" time="0.0">
+  </testcase>
+  <testcase id="LOGIC-HOME-001" name="Home Feed State: Initial load of home banners and section rows" classname="com.vplayed.quality.APP_LOGIC" time="0.0">
+  </testcase>
+  <testcase id="LOGIC-SESSION-001" name="Session Lifecycle: Decision D21: 401 Unauthorized token eviction" classname="com.vplayed.quality.APP_LOGIC" time="0.0">
+  </testcase>
+  <testcase id="UI-SPLASH-001" name="Splash Screen: Render animated logo and resolve session status from secure storage" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="UI-LOGIN-001" name="Login Screen: Render email text field with floating placeholder, continue CTA, and guest button" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="UI-OTP-001" name="OTP Verification Screen: Render 6 separate pin boxes, resend countdown timer, and inline error banner" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="UI-DEVICE-001" name="Device Limit Sheet: Render active signed-in devices list with device icons, current badge, and evict buttons" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="UI-HOME-001" name="Home Screen: Render auto-advancing banner carousel and vertical LazyColumn with horizontal rows" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="UI-PLAYER-001" name="Video Player Screen: Simulate media playback controls overlay, aspect ratio scaling, and quality selector" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="UI-MOVIES-001" name="Movies Grid Screen: Render 3-column portrait card grid with SVOD/TVOD access badge overlays" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="UI-COMMON-001" name="App Settings & RTL: Validate responsive layout switches, RTL locale mirroring, and PiP indicators" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
+  </testcase>
+  <testcase id="E2E-AUTH-001" name="End-to-End Navigation: User Journey 1: Email Login -> Code Verification -> Session Storage -> Home Feed Landing" classname="com.vplayed.quality.NAVIGATION_E2E" time="0.015">
+  </testcase>
+  <testcase id="E2E-AUTH-002" name="End-to-End Navigation: User Journey 2: Device Limit Exceeded -> Evict Remote Device -> Auto-login -> Home" classname="com.vplayed.quality.NAVIGATION_E2E" time="0.015">
+  </testcase>
+  <testcase id="E2E-BROWSE-001" name="End-to-End Navigation: User Journey 3: Home Launch -> Banner Click -> Movie Details -> Playback -> Back Navigation" classname="com.vplayed.quality.NAVIGATION_E2E" time="0.015">
+  </testcase>
+  <testcase id="E2E-SESSION-001" name="End-to-End Navigation: User Journey 4: Background App -> Simulate HTTP 401 Session Expiry -> Clean Redirect to Login" classname="com.vplayed.quality.NAVIGATION_E2E" time="0.015">
+  </testcase>
+  <testcase id="E2E-OFFLINE-001" name="End-to-End Navigation: User Journey 5: Offline Launch -> Cached Home Rows Shown -> Reconnection -> Silent Geo Refresh" classname="com.vplayed.quality.NAVIGATION_E2E" time="0.015">
+  </testcase>
+  <testcase id="PLAT-ANDROID-001" name="Android OkHttp Engine: OkHttp client real loopback socket wire headers and timeout handling" classname="com.vplayed.quality.PLATFORM_COMPATIBILITY" time="0.025">
+  </testcase>
+  <testcase id="PLAT-IOS-001" name="Apple Darwin Engine & FlowWatcher: Kotlin Flow and StateFlow observation from Swift via FlowWatcher" classname="com.vplayed.quality.PLATFORM_COMPATIBILITY" time="0.02">
+  </testcase>
+  <testcase id="PERF-CRYPTO-001" name="Transport Cryptography: AES-256-CBC 100-round encryption/decryption throughput" classname="com.vplayed.quality.PERFORMANCE_STABILITY" time="0.011">
+  </testcase>
+  <testcase id="PERF-JSON-001" name="Serialization Engine: SharedJson parsing throughput under high-frequency feeds" classname="com.vplayed.quality.PERFORMANCE_STABILITY" time="0.0">
+  </testcase>
+  <testcase id="SEC-LOG-001" name="Security & Privacy: Zero-leak audit: Verify tokens, codes, and passphrases are never logged" classname="com.vplayed.quality.SECURITY_PRIVACY" time="0.005">
+  </testcase>
+</testsuite>

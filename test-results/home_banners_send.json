@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "endpoint": "mediaview/api/v1/homebanners",
+  "headers": {
+    "Accept": "application/json",
+    "X-Request-Type": "mobile",
+    "device_type": "android",
+    "app_version": "3.0.0"
+  }
+}

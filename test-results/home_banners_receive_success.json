@@ -1,0 +1,385 @@
+{
+  "statusCode": 200,
+  "message": "Home banners fetched successfully.",
+  "status": "success",
+  "response": {
+    "data": [
+      {
+        "_id": "6ad079ea1a879fec419f2065",
+        "is_active": true,
+        "rank": "0|xzzzy8:",
+        "created_at": "2026-10-15T06:59:54.713Z",
+        "updated_at": "2026-10-15T06:59:54.713Z",
+        "__v": 0,
+        "studio_details": {
+          "_id": "6a1432ca1121914bd8a167f2",
+          "name": "VplayedDev",
+          "slug": "vplayeddev",
+          "bg_card_color": "#9C760A"
+        },
+        "master_details": {
+          "_id": "6a2f84f52e1dcb33c68e6457",
+          "title": "Vide Detail Page Test",
+          "age_limit": 1,
+          "poster_image": "gudsho-upload-poster-images/15-06-2026/1781499115019-web-BloodFather.jpg",
+          "home_banner_image": "gudsho-upload-home-banner-images/15-06-2026/1781499123703-web-BloodFather.jpg",
+          "slug": "blood-father",
+          "sho_type": 1,
+          "title_image": null,
+          "poster_images": {
+            "default": {
+              "mobile": "gudsho-upload-poster-images/15-06-2026/1781499115052-mobile-BloodFather.jpg",
+              "web": "gudsho-upload-poster-images/15-06-2026/1781499115019-web-BloodFather.jpg",
+              "Key": "gudsho-upload-poster-images/15-06-2026/1781499115019-web-BloodFather.jpg"
+            },
+            "webp": {
+              "mobile": "gudsho-upload-poster-images/15-06-2026/1781499115177-mobile-BloodFather.webp",
+              "web": "gudsho-upload-poster-images/15-06-2026/1781499115135-web-BloodFather.webp",
+              "Key": "gudsho-upload-poster-images/15-06-2026/1781499115135-web-BloodFather.webp"
+            },
+            "avif": {
+              "mobile": "gudsho-upload-poster-images/15-06-2026/1781499115538-mobile-BloodFather.avif",
+              "web": "gudsho-upload-poster-images/15-06-2026/1781499115615-web-BloodFather.avif",
+              "Key": "gudsho-upload-poster-images/15-06-2026/1781499115615-web-BloodFather.avif"
+            }
+          },
+          "home_banner_images": {
+            "default": {
+              "mobile": "gudsho-upload-home-banner-images/15-06-2026/1781499123694-mobile-BloodFather.jpg",
+              "web": "gudsho-upload-home-banner-images/15-06-2026/1781499123703-web-BloodFather.jpg",
+              "Key": "gudsho-upload-home-banner-images/15-06-2026/1781499123703-web-BloodFather.jpg"
+            },
+            "webp": {
+              "mobile": "gudsho-upload-home-banner-images/15-06-2026/1781499123706-mobile-BloodFather.webp",
+              "web": "gudsho-upload-home-banner-images/15-06-2026/1781499123732-web-BloodFather.webp",
+              "Key": "gudsho-upload-home-banner-images/15-06-2026/1781499123732-web-BloodFather.webp"
+            },
+            "avif": {
+              "mobile": "gudsho-upload-home-banner-images/15-06-2026/1781499123964-mobile-BloodFather.avif",
+              "web": "gudsho-upload-home-banner-images/15-06-2026/1781499124035-web-BloodFather.avif",
+              "Key": "gudsho-upload-home-banner-images/15-06-2026/1781499124035-web-BloodFather.avif"
+            }
+          },
+          "title_images": null,
+          "new_thumbnail_images": {
+            "default": {
+              "tm": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124255-tm-BloodFather.jpg",
+              "ts": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124262-ts-BloodFather.jpg",
+              "tv": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124316-tv-BloodFather.jpg",
+              "ta": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124282-ta-BloodFather.jpg",
+              "tp": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124275-tp-BloodFather.jpg",
+              "to": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124286-to-BloodFather.jpg",
+              "tc": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124288-tc-BloodFather.jpg",
+              "tl": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124287-tl-BloodFather.jpg"
+            },
+            "webp": {
+              "ta": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124347-ta-BloodFather.webp",
+              "ts": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124334-ts-BloodFather.webp",
+              "tm": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124325-tm-BloodFather.webp",
+              "tc": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124342-tc-BloodFather.webp",
+              "tp": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124348-tp-BloodFather.webp",
+              "tv": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124388-tv-BloodFather.webp",
+              "tl": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124343-tl-BloodFather.webp",
+              "to": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124340-to-BloodFather.webp"
+            },
+            "avif": {
+              "tp": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124751-tp-BloodFather.avif",
+              "tm": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124495-tm-BloodFather.avif",
+              "ts": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124584-ts-BloodFather.avif",
+              "ta": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124811-ta-BloodFather.avif",
+              "tl": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124758-tl-BloodFather.avif",
+              "to": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124765-to-BloodFather.avif",
+              "tc": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499124792-tc-BloodFather.avif",
+              "tv": "gudsho-upload-new_thumbnail_images/15-06-2026/1781499125127-tv-BloodFather.avif"
+            }
+          },
+          "video_banner_images": {
+            "default": {
+              "mobile": "gudsho-upload-video-banner-images/15-06-2026/1781499123095-mobile-BloodFather.jpg",
+              "web": "gudsho-upload-video-banner-images/15-06-2026/1781499123101-web-BloodFather.jpg",
+              "Key": "gudsho-upload-video-banner-images/15-06-2026/1781499123101-web-BloodFather.jpg"
+            },
+            "webp": {
+              "mobile": "gudsho-upload-video-banner-images/15-06-2026/1781499123146-mobile-BloodFather.webp",
+              "web": "gudsho-upload-video-banner-images/15-06-2026/1781499123139-web-BloodFather.webp",
+              "Key": "gudsho-upload-video-banner-images/15-06-2026/1781499123139-web-BloodFather.webp"
+            },
+            "avif": {
+              "mobile": "gudsho-upload-video-banner-images/15-06-2026/1781499123426-mobile-BloodFather.avif",
+              "web": "gudsho-upload-video-banner-images/15-06-2026/1781499123464-web-BloodFather.avif",
+              "Key": "gudsho-upload-video-banner-images/15-06-2026/1781499123464-web-BloodFather.avif"
+            }
+          },
+          "use_video_thumbnail_image_instead": false,
+          "monetization": 1,
+          "description": "An ex-con reconnects with his estranged teenage daughter while fighting to keep her alive after she becomes a target of violent drug dealers.",
+          "thumbnail_image": "gudsho-upload-thumbnail-images/15-06-2026/1781499117862-web-BloodFather.jpg",
+          "thumbnail_images": {
+            "default": {
+              "mobile": "gudsho-upload-thumbnail-images/15-06-2026/1781499117856-mobile-BloodFather.jpg",
+              "web": "gudsho-upload-thumbnail-images/15-06-2026/1781499117862-web-BloodFather.jpg",
+              "Key": "gudsho-upload-thumbnail-images/15-06-2026/1781499117862-web-BloodFather.jpg"
+            },
+            "webp": {
+              "web": "gudsho-upload-thumbnail-images/15-06-2026/1781499117864-web-BloodFather.webp",
+              "mobile": "gudsho-upload-thumbnail-images/15-06-2026/1781499117876-mobile-BloodFather.webp",
+              "Key": "gudsho-upload-thumbnail-images/15-06-2026/1781499117864-web-BloodFather.webp"
+            },
+            "avif": {
+              "mobile": "gudsho-upload-thumbnail-images/15-06-2026/1781499117932-mobile-BloodFather.avif",
+              "web": "gudsho-upload-thumbnail-images/15-06-2026/1781499118015-web-BloodFather.avif",
+              "Key": "gudsho-upload-thumbnail-images/15-06-2026/1781499118015-web-BloodFather.avif"
+            }
+          },
+          "tags": [
+            "drug dealer",
+            "trailer park",
+            "parent child relationship",
+            "on the run",
+            "teenage girl"
+          ],
+          "genre": [
+            {
+              "_id": "6a1432f418d4d53c2c6003c4",
+              "title": "Action",
+              "slug": "action"
+            },
+            {
+              "_id": "6a1432f418d4d54c5d6003d2",
+              "title": "Thriller",
+              "slug": "thriller"
+            },
+            {
+              "_id": "6a1432f418d4d563cb6003c8",
+              "title": "Drama",
+              "slug": "drama"
+            }
+          ],
+          "default_genre": {
+            "_id": "6a1432f418d4d533716003d0",
+            "is_active": true,
+            "is_archived": false,
+            "title": {
+              "en": "Science fiction",
+              "es": "Ciencia ficción",
+              "fr": "Science-fiction",
+              "hi": "विज्ञान कथा",
+              "ja": "SF",
+              "ko": "공상과학",
+              "ml": "സയൻസ് ഫിക്ഷൻ",
+              "ta": "அறிவியல் புனைவு",
+              "te": "సైన్స్ ఫిక్షన్",
+              "tr": "Bilim kurgu"
+            },
+            "slug": "science-fiction",
+            "creator_id": "6a1432ca11219130eba167e0",
+            "updator_id": "6a1432ca11219130eba167e0",
+            "created_at": "2026-05-25T11:31:00.508Z",
+            "updated_at": "2026-05-25T11:31:00.508Z",
+            "__v": 0
+          },
+          "access_period": "6a670a9b55c13db9d1970d3c",
+          "studio_slug": "vplayeddev",
+          "scheduled_at": null,
+          "is_published": 1,
+          "geo_area": [],
+          "publish_status": 0,
+          "content_label": {
+            "is_full_time": true,
+            "title": "Hot Movie"
+          },
+          "is_watch_later": 0
+        }
+      },
+      {
+        "_id": "6ac49c05dcd757c38880f285",
+        "is_active": true,
+        "rank": "0|xzzzyg:",
+        "created_at": "2026-10-06T06:58:13.173Z",
+        "updated_at": "2026-10-06T06:58:13.173Z",
+        "__v": 0,
+        "studio_details": {
+          "_id": "6a1432ca1121914bd8a167f2",
+          "name": "VplayedDev",
+          "slug": "vplayeddev",
+          "bg_card_color": "#9C760A"
+        },
+        "master_details": {
+          "_id": "6a2cec2e0db67c100e8db016",
+          "title": "Captain America: Brave New World",
+          "age_limit": 1,
+          "slug": "captain-america:-brave-new-world",
+          "sho_type": 2,
+          "title_image": "gudsho-upload-title-images/13-06-2026/1781329364273-web-blob.avif",
+          "title_images": {
+            "default": {
+              "web": "gudsho-upload-title-images/13-06-2026/1781329362075-web-blob.png",
+              "mobile": "gudsho-upload-title-images/13-06-2026/1781329362075-web-blob.png"
+            },
+            "webp": {
+              "web": "gudsho-upload-title-images/13-06-2026/1781329363979-web-blob.webp",
+              "mobile": "gudsho-upload-title-images/13-06-2026/1781329363987-mobile-blob.webp",
+              "Key": "gudsho-upload-title-images/13-06-2026/1781329363979-web-blob.webp"
+            },
+            "avif": {
+              "web": "gudsho-upload-title-images/13-06-2026/1781329364273-web-blob.avif",
+              "mobile": "gudsho-upload-title-images/13-06-2026/1781329364277-mobile-blob.avif",
+              "Key": "gudsho-upload-title-images/13-06-2026/1781329364273-web-blob.avif"
+            }
+          },
+          "new_thumbnail_images": {
+            "default": {
+              "to": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328992040-blob.jpg",
+              "tl": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328996140-blob.jpg",
+              "tc": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328997297-blob.jpg",
+              "tm": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328996515-blob.jpg",
+              "ts": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328996570-blob.jpg",
+              "tp": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328996768-blob.jpg",
+              "ta": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328997156-blob.jpg",
+              "tv": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328997213-blob.jpg"
+            },
+            "webp": {
+              "to": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328991464-blob.webp",
+              "tl": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328996182-blob.webp",
+              "tc": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328996159-blob.webp",
+              "tm": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328993328-blob.webp",
+              "ts": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328993415-blob.webp",
+              "tp": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328993890-blob.webp",
+              "ta": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328993808-blob.webp",
+              "tv": "gudsho-upload-new_thumbnail_images/13-06-2026/1781328994761-blob.webp"
+            }
+          },
+          "video_banner_images": {
+            "default": {
+              "web": "gudsho-upload-video-banner-images/13-06-2026/1781330074915-web-blob.jpg",
+              "mobile": "gudsho-upload-video-banner-images/13-06-2026/1781330074924-mobile-blob.jpg",
+              "Key": "gudsho-upload-video-banner-images/13-06-2026/1781330074915-web-blob.jpg"
+            },
+            "webp": {
+              "web": "gudsho-upload-video-banner-images/13-06-2026/1781330080238-web-blob.webp",
+              "mobile": "gudsho-upload-video-banner-images/13-06-2026/1781330080248-mobile-blob.webp",
+              "Key": "gudsho-upload-video-banner-images/13-06-2026/1781330080238-web-blob.webp"
+            },
+            "avif": {
+              "web": "gudsho-upload-video-banner-images/13-06-2026/1781330084404-web-blob.avif",
+              "mobile": "gudsho-upload-video-banner-images/13-06-2026/1781330084410-mobile-blob.avif",
+              "Key": "gudsho-upload-video-banner-images/13-06-2026/1781330084404-web-blob.avif"
+            }
+          },
+          "use_video_thumbnail_image_instead": false,
+          "monetization": 5,
+          "description": "Following the events of Avengers: Endgame, Sam Wilson (The Falcon) grapples with the weight of Captain America's legacy while Bucky Barnes (the Winter Soldier) seeks redemption for his violent past. ",
+          "tags": [
+            "#Captain",
+            "#america"
+          ],
+          "genre": [
+            "6a1432f418d4d53c2c6003c4"
+          ],
+          "default_genre": {
+            "_id": "6a1432f418d4d59ab56003c5",
+            "is_active": true,
+            "is_archived": false,
+            "title": {
+              "en": "Adventure"
+            },
+            "slug": "adventure"
+          },
+          "studio_slug": "vplayeddev",
+          "is_published": 1,
+          "geo_area": [],
+          "publish_status": 0,
+          "is_watch_later": 0
+        }
+      },
+      {
+        "_id": "6ac33d7da8dd9b09e6a08ae4",
+        "is_active": true,
+        "rank": "0|xzzzyo:",
+        "created_at": "2026-10-05T06:02:37.594Z",
+        "updated_at": "2026-10-05T06:02:37.594Z",
+        "__v": 0,
+        "studio_details": {
+          "_id": "6a1432ca1121914bd8a167f2",
+          "name": "VplayedDev",
+          "slug": "vplayeddev",
+          "bg_card_color": "#9C760A"
+        },
+        "master_details": {
+          "_id": "6a2d2b424ca542acd5098bf3",
+          "title": "The Snow Girl",
+          "age_limit": 3,
+          "slug": "the-snow-girl",
+          "sho_type": 6,
+          "new_thumbnail_images": {
+            "default": {
+              "to": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345314777-blob.jpg",
+              "tl": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315385-blob.jpg",
+              "tc": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315352-blob.jpg",
+              "tm": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315616-blob.jpg",
+              "ts": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315562-blob.jpg",
+              "tp": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315750-blob.jpg",
+              "tv": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315711-blob.jpg"
+            },
+            "webp": {
+              "to": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345314501-blob.webp",
+              "tl": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315257-blob.webp",
+              "tc": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345314845-blob.webp",
+              "tm": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345314979-blob.webp",
+              "ts": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345314668-blob.webp",
+              "tp": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315504-blob.webp",
+              "tv": "gudsho-upload-micro_series_thumbnail_images/13-06-2026/1781345315162-blob.webp"
+            }
+          },
+          "video_banner_images": {
+            "default": {
+              "web": "gudsho-upload-video-banner-images/13-06-2026/1781345654852-web-blob.jpg",
+              "mobile": "gudsho-upload-video-banner-images/13-06-2026/1781345654860-mobile-blob.jpg",
+              "Key": "gudsho-upload-video-banner-images/13-06-2026/1781345654852-web-blob.jpg"
+            },
+            "webp": {
+              "web": "gudsho-upload-video-banner-images/13-06-2026/1781345658611-web-blob.webp",
+              "mobile": "gudsho-upload-video-banner-images/13-06-2026/1781345658616-mobile-blob.webp",
+              "Key": "gudsho-upload-video-banner-images/13-06-2026/1781345658611-web-blob.webp"
+            }
+          },
+          "use_video_thumbnail_image_instead": false,
+          "monetization": 5,
+          "description": "During the Cavalcade of the Magi parade, the Martín family's daughter Amaya disappears. Journalist Miren takes on the case, determined to find her.",
+          "tags": [
+            "#Snow",
+            "#Girl"
+          ],
+          "genre": [
+            {
+              "_id": "6a1432f418d4d5994d6003c7",
+              "title": "Crime",
+              "slug": "crime"
+            },
+            {
+              "_id": "6a1432f418d4d517c66003cd",
+              "title": "Philosophical",
+              "slug": "philosophical"
+            }
+          ],
+          "default_genre": {
+            "_id": "6a1432f418d4d563cb6003c8",
+            "is_active": true,
+            "is_archived": false,
+            "title": {
+              "en": "Drama"
+            },
+            "slug": "drama"
+          },
+          "studio_slug": "vplayeddev",
+          "scheduled_at": null,
+          "is_published": 1,
+          "geo_area": [],
+          "publish_status": 0,
+          "is_watch_later": 0
+        }
+      }
+    ]
+  },
+  "error": false
+}

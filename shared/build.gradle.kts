@@ -69,3 +69,21 @@ kotlin {
         }
     }
 }
+
+tasks.register("runApiContractTests") {
+    group = "verification"
+    description = "Runs comprehensive API contract and wire serialization validation tests."
+    dependsOn("testAndroidHostTest")
+}
+
+tasks.register("runQualityChecks") {
+    group = "verification"
+    description = "Executes the unified automated quality framework and diagnostic validation suite."
+    dependsOn("testAndroidHostTest")
+}
+
+tasks.register("generateQualityReport") {
+    group = "verification"
+    description = "Generates execution dashboards, sanitized API captures, and test-results artifacts."
+    dependsOn("testAndroidHostTest")
+}

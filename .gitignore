@@ -1,19 +1,74 @@
-*.iml
-.kotlin
+# Built application & library binaries
+*.apk
+*.ap_
+*.aab
+*.a
+*.so
+*.dylib
+
+# Compiled archives & artifacts
+*.jar
+*.aar
+*.klib
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Keep Gradle wrapper jar
+!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# JVM compiled classes
+*.class
+
+# Gradle & Build directories
 .gradle
+build/
 **/build/
-xcuserdata
 !src/**/build/
-local.properties
+
+# Local Maven artifact repo
+repo/localMaven/
+repo/
+
+
+# Android Studio & IntelliJ IDEA
+*.iml
 .idea
-.DS_Store
-captures
+.kotlin
+local.properties
 .externalNativeBuild
 .cxx
+
+# OS metadata
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Xcode & Apple build artifacts
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+xcuserdata
+DerivedData/
+*.xcframework
+*.dSYM/
+
+# Node / JS
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Diagnostics, memory dumps & logs
+*.hprof
+*.log

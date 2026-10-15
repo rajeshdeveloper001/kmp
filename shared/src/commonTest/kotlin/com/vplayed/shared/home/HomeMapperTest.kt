@@ -7,6 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -17,7 +18,7 @@ class HomeMapperTest {
 
     private val mapper = HomeMapper(imageBaseUrl = "https://images.test/", imagePolicy = HomeImagePolicy.ANDROID)
 
-    private fun page(fixture: String) = mapper.sectionsPage(response(fixture))
+    private fun page(fixture: String): HomeSectionsPage = mapper.sectionsPage(response(fixture))
 
     private val allSections by lazy {
         (page(HomeFixtures.HOME_PAGE_1).sections + page(HomeFixtures.HOME_PAGE_2).sections + page(HomeFixtures.HOME_PAGE_3).sections)
@@ -295,6 +296,62 @@ class HomeMapperAppleTest {
         assertEquals(listOf("Drama"), hero.genres, "Genre ids are skipped")
         assertEquals("https://images.test/posters/b.jpg", banners[1].imageUrl)
         assertNull(banners[1].showType)
+    }
+
+    @Test
+    fun givenRealtimeProductionHomeResponse_whenMapping_thenLiveStreamingAndFastSectionsParsedCleanly() {
+        val result = mapper.sectionsPage(response(HomeFixtures.HOME_REALTIME_RESPONSE))
+        assertEquals(2, result.nextPage)
+        assertEquals(20, result.totalSections)
+        assertEquals(1, result.sections.size)
+
+        val liveSection = result.sections[0]
+        assertEquals("6a33d9a8f4074a83f46a090d", liveSection.id)
+        assertEquals("Live streaming", liveSection.title)
+        assertEquals(ContentType.LIVE, liveSection.type)
+        assertEquals(SectionStyle.LIVE, liveSection.style)
+        assertEquals(6, liveSection.totalItems)
+        assertTrue(liveSection.items.isNotEmpty())
+
+        val firstItem = liveSection.items[0]
+        assertEquals("6accd9b1d49de81f8df1143b", firstItem.id)
+        assertEquals("Test Live 3", firstItem.title)
+        assertEquals(ContentType.LIVE, firstItem.type)
+        assertEquals("Adventure", firstItem.genre)
+        val liveDetails = firstItem.details as ItemDetails.Live
+        assertEquals(LiveStatus.UPCOMING, liveDetails.status)
+        assertFalse(firstItem.isLive)
+    }
+
+    @Test
+    fun givenRealtimeProductionHomeBannersResponse_whenMapping_thenThreeBannersParsedCleanly() {
+        val banners = mapper.banners(response(HomeFixtures.HOME_BANNERS_REALTIME_RESPONSE))
+        assertEquals(3, banners.size)
+
+        // Banner 1: Video
+        val banner1 = banners[0]
+        assertEquals("6ad079ea1a879fec419f2065", banner1.id)
+        assertEquals("Vide Detail Page Test", banner1.title)
+        assertEquals(ShowType.VIDEO, banner1.showType)
+        assertEquals("blood-father", banner1.slug)
+        assertNotNull(banner1.imageUrl)
+
+        // Banner 2: Series
+        val banner2 = banners[1]
+        assertEquals("6ac49c05dcd757c38880f285", banner2.id)
+        assertEquals("Captain America: Brave New World", banner2.title)
+        assertEquals(ShowType.SERIES, banner2.showType)
+        assertEquals("captain-america:-brave-new-world", banner2.slug)
+        assertNotNull(banner2.imageUrl)
+        assertNotNull(banner2.titleImageUrl)
+
+        // Banner 3: Micro Series
+        val banner3 = banners[2]
+        assertEquals("6ac33d7da8dd9b09e6a08ae4", banner3.id)
+        assertEquals("The Snow Girl", banner3.title)
+        assertEquals(ShowType.MICRO_SERIES, banner3.showType)
+        assertEquals("the-snow-girl", banner3.slug)
+        assertNotNull(banner3.imageUrl)
     }
 }
 
