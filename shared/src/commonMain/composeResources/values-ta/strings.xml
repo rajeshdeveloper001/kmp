@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from VPlayed Localizable.xcstrings (reference) and AndroidJP strings.xml.
+     The one string catalog for AndroidJP and VPlayed. Placeholders are %1$s, %2$s… only:
+     apps pass numbers already formatted for the locale. A literal percent sign is a single %.
+     Values are not Android resources: write apostrophes plainly, never \'. -->
+<resources>
+
+    <!-- Common -->
+    <string name="common_back">பின்செல்</string>
+    <string name="common_cancel">ரத்துசெய்</string>
+    <string name="common_change">மாற்று</string>
+    <string name="common_close">மூடு</string>
+    <string name="common_continue">தொடர்க</string>
+    <string name="common_try_again">மீண்டும் முயல்க</string>
+    <string name="common_refresh">புதுப்பி</string>
+    <string name="common_details">விவரங்கள்</string>
+    <string name="common_coming_soon">விரைவில்</string>
+    <string name="common_coming_soon_caps">விரைவில்</string>
+    <string name="common_view_all">அனைத்தையும் காண்க</string>
+    <string name="common_title">தலைப்பு</string>
+    <string name="common_sign_in">உள்நுழை</string>
+    <string name="common_sign_out">வெளியேறு</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">முகப்பு</string>
+    <string name="nav_promos">ப்ரோமோ</string>
+    <string name="nav_subscription">சந்தா</string>
+    <string name="nav_search">தேடல்</string>
+    <string name="nav_movies">திரைப்படங்கள்</string>
+    <string name="nav_language">மொழி</string>
+    <string name="nav_channel">சேனல்</string>
+    <string name="nav_bulk_purchase">மொத்தக் கொள்முதல்</string>
+    <string name="nav_voice_search">குரல் தேடல்</string>
+    <string name="nav_notifications">அறிவிப்புகள்</string>
+    <string name="placeholder_detail">%1$s விவரம்</string>
+    <string name="placeholder_screen_not_built">இந்தத் திரை இன்னும் உருவாக்கப்படவில்லை.</string>
+    <string name="placeholder_not_available">இது இந்தப் பதிப்பில் இன்னும் கிடைக்கவில்லை.</string>
+
+    <!-- Content kinds -->
+    <string name="content_kind_video">வீடியோ</string>
+    <string name="content_kind_series">தொடர்</string>
+    <string name="content_kind_micro_series">குறுந்தொடர்</string>
+    <string name="content_kind_promo">ப்ரோமோ</string>
+    <string name="content_kind_audio">ஆடியோ</string>
+    <string name="content_kind_live">நேரலை</string>
+
+    <!-- Splash -->
+    <string name="splash_tagline">அனுபவத்தை ஸ்ட்ரீம் செய்யுங்கள்</string>
+    <string name="splash_skip_intro">அறிமுகத்தைத் தவிர்</string>
+
+    <!-- Menu and language -->
+    <string name="menu_open">மெனு</string>
+    <string name="menu_close">மெனுவை மூடு</string>
+    <string name="menu_signed_in_as">%1$s ஆக உள்நுழைந்துள்ளீர்கள்</string>
+    <string name="menu_sign_out_confirm">%1$s இலிருந்து வெளியேறவா?</string>
+    <string name="language_footer">%1$s-இன் தலைப்புகளும் விளக்கங்களும் அந்த மொழியில் கிடைக்கும்போது அவையும் மாறும்.</string>
+
+    <!-- Home -->
+    <string name="home_featured">சிறப்பு</string>
+    <string name="home_watch_now">இப்போது பார்</string>
+    <string name="home_add_to_watchlist">%1$s ஐப் பார்வைப் பட்டியலில் சேர்</string>
+    <string name="home_slide_position">ஸ்லைடு %1$s / %2$s</string>
+    <string name="home_badge_live">நேரலை</string>
+    <string name="home_badge_upcoming">வரவிருக்கிறது</string>
+    <string name="home_watch_live">நேரலையில் பார்</string>
+    <string name="home_set_reminder">நினைவூட்டு</string>
+    <string name="home_follow">பின்தொடர்</string>
+    <string name="home_following">பின்தொடர்கிறீர்கள்</string>
+    <string name="home_unfollow">பின்தொடர்வதை நிறுத்து</string>
+    <string name="home_unfollow_confirm">%1$s ஐப் பின்தொடர்வதை நிறுத்தவா?</string>
+    <string name="home_followed_toast">இந்தச் சேனலைப் பின்தொடரத் தொடங்கிவிட்டீர்கள்</string>
+    <string name="home_unfollowed_toast">இந்தச் சேனலைப் பின்தொடர்வதை நிறுத்திவிட்டீர்கள்</string>
+    <string name="home_explore_bundles">தொகுப்புகளைப் பாருங்கள்</string>
+    <string name="home_save_up_to">%1$s% வரை சேமியுங்கள்</string>
+    <string name="home_price">விலை %1$s</string>
+    <string name="home_rank_label">எண் %1$s, %2$s</string>
+    <string name="home_shows_all_titles_in">%1$s இல் உள்ள அனைத்தையும் காட்டும்</string>
+    <string name="home_loading">முகப்பு ஏற்றப்படுகிறது</string>
+    <string name="home_loading_more">மேலும் ஏற்றப்படுகிறது</string>
+    <string name="home_load_failed">முகப்பை ஏற்ற முடியவில்லை</string>
+    <string name="home_load_more_failed">மேலும் ஏற்ற முடியவில்லை. மீண்டும் முயல தட்டவும்.</string>
+    <string name="home_empty_title">உங்கள் முகப்பு காலியாக உள்ளது</string>
+    <string name="home_empty_message">இன்னும் காட்ட எதுவும் இல்லை. விரைவில் மீண்டும் பாருங்கள்.</string>
+    <string name="home_sign_in_watchlist">உங்கள் பார்வைப் பட்டியலில் சேர்க்க உள்நுழையவும்</string>
+    <string name="home_sign_in_follow">சேனல்களைப் பின்தொடர உள்நுழையவும்</string>
+    <string name="home_sign_in_reminder">நினைவூட்டலை அமைக்க உள்நுழையவும்</string>
+
+    <!-- Movies -->
+    <string name="movies_load_failed">திரைப்படங்களை ஏற்ற முடியவில்லை</string>
+    <string name="movies_empty">இன்னும் திரைப்படங்கள் இல்லை</string>
+    <string name="movies_loading">திரைப்படங்கள் ஏற்றப்படுகின்றன</string>
+
+    <!-- Sign in -->
+    <string name="login_step">படி %1$s / 3</string>
+    <string name="login_title">உள்நுழையவும் அல்லது கணக்கை உருவாக்கவும்</string>
+    <string name="login_google">Google மூலம் பதிவுசெய்க</string>
+    <string name="login_apple">Apple மூலம் பதிவுசெய்க</string>
+    <string name="login_divider_email">அல்லது மின்னஞ்சல் மூலம் தொடர்க</string>
+    <!-- needs_review -->
+    <string name="login_divider_phone">அல்லது மொபைல் எண்ணுடன் தொடரவும்</string>
+    <string name="login_email_label">மின்னஞ்சல் முகவரி</string>
+    <string name="login_email_help">இது நீங்கள்தான் என உறுதிசெய்ய 6 இலக்கக் குறியீட்டை அனுப்புவோம்.</string>
+    <!-- needs_review -->
+    <string name="login_phone_label">மொபைல் எண்</string>
+    <!-- needs_review -->
+    <string name="login_phone_country">நாட்டுக் குறியீடு</string>
+    <!-- needs_review -->
+    <string name="login_phone_help">இது நீங்கள்தான் என உறுதிசெய்ய 6 இலக்கக் குறியீட்டை SMS மூலம் அனுப்புவோம்.</string>
+    <string name="login_continue_as_guest">விருந்தினராகத் தொடர்க</string>
+    <string name="login_terms">எனக்கு 18 வயதுக்கு மேல் ஆகிறது, தொடர்வதன் மூலம் [பயன்பாட்டு விதிமுறைகள்](terms) மற்றும் [தனியுரிமைக் கொள்கை](privacy) ஆகியவற்றை ஏற்கிறேன்.</string>
+    <!-- needs_review -->
+    <string name="session_expired">அமர்வு காலாவதியானது, தொடர உள்நுழையவும்</string>
+
+    <!-- Verification code -->
+    <string name="otp_title">இது நீங்கள்தான் என உறுதிசெய்யவும்</string>
+    <string name="otp_note">%1$s க்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்</string>
+    <string name="otp_code_description">சரிபார்ப்புக் குறியீடு</string>
+    <string name="otp_resend_prompt">குறியீடு வரவில்லையா?</string>
+    <string name="otp_resend">மீண்டும் அனுப்பு</string>
+    <string name="otp_resend_in">%1$s இல் மீண்டும் அனுப்பலாம்</string>
+    <string name="otp_verify">சரிபார்த்துத் தொடர்க</string>
+    <!-- needs_review -->
+    <string name="otp_devices_title">அதிகபட்ச சாதன வரம்பை எட்டிவிட்டீர்கள்</string>
+    <!-- needs_review -->
+    <string name="otp_devices_note">உங்கள் கணக்கு அனுமதிக்கப்பட்ட அதிகபட்ச சாதனங்களில் உள்நுழைந்துள்ளது. தொடர, அவற்றில் ஒன்றிலிருந்து வெளியேறவும்.</string>
+    <!-- needs_review -->
+    <string name="otp_device_this_device">இந்தச் சாதனம்</string>
+    <!-- needs_review -->
+    <string name="otp_devices_sign_out_all">எல்லாச் சாதனங்களிலிருந்தும் வெளியேறு</string>
+    <string name="otp_success_title">எல்லாம் தயார்</string>
+    <string name="otp_success_note">உங்கள் %1$s கணக்கு தயார்.</string>
+    <string name="otp_success_progress">உள்ளே அழைத்துச் செல்கிறோம்…</string>
+
+    <!-- Registration -->
+    <!-- needs_review -->
+    <string name="register_title">உங்களைப் பற்றி சொல்லுங்கள்</string>
+    <!-- needs_review -->
+    <string name="register_note">உங்கள் %1$s கணக்கை உருவாக்கி முடிக்க சுயவிவரத்தை நிறைவு செய்யவும்.</string>
+    <!-- needs_review -->
+    <string name="register_name_label">முழுப் பெயர்</string>
+    <!-- needs_review -->
+    <string name="register_name_placeholder">உங்கள் பெயரை உள்ளிடவும்</string>
+    <!-- needs_review -->
+    <string name="register_referral_toggle">பரிந்துரைக் குறியீடு உள்ளதா?</string>
+    <!-- needs_review -->
+    <string name="register_referral_label">பரிந்துரைக் குறியீடு</string>
+    <!-- needs_review -->
+    <string name="register_referral_placeholder">பரிந்துரைக் குறியீட்டை உள்ளிடவும்</string>
+    <!-- needs_review -->
+    <string name="register_submit">அமைப்பை முடி</string>
+    <!-- needs_review -->
+    <string name="register_success_title">எல்லாம் தயார், %1$s</string>
+
+    <!-- Validation -->
+    <string name="validation_email_invalid">சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்</string>
+    <!-- needs_review -->
+    <string name="validation_email_required">மின்னஞ்சல் முகவரி தேவை</string>
+    <!-- needs_review -->
+    <string name="validation_phone_india">சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்</string>
+    <!-- needs_review -->
+    <string name="validation_phone_invalid">தவறான மொபைல் எண்</string>
+    <!-- needs_review -->
+    <string name="validation_phone_required">மொபைல் எண் தேவை</string>
+    <!-- needs_review -->
+    <string name="validation_name_required">உங்கள் பெயரை உள்ளிடவும்.</string>
+    <!-- needs_review -->
+    <string name="validation_name_too_short">பெயர் குறைந்தது 2 எழுத்துகள் இருக்க வேண்டும்.</string>
+
+    <!-- Sign-in messages (AuthMessageKey). %1$s, where present, is the brand name. -->
+    <string name="auth_device_limit">அதிகபட்ச சாதனங்களில் உள்நுழைந்துள்ளீர்கள். வேறொரு சாதனத்தில் வெளியேறி, மீண்டும் முயலவும்.</string>
+    <!-- needs_review -->
+    <string name="auth_login_failed">உங்களை உள்நுழைய வைக்க முடியவில்லை. மீண்டும் முயலவும்.</string>
+    <!-- needs_review -->
+    <string name="auth_otp_invalid">தவறான குறியீடு. மீண்டும் முயலவும்.</string>
+    <string name="auth_registration_required">இந்த மின்னஞ்சல் இன்னும் பதிவு செய்யப்படவில்லை. %1$s இணையதளத்தில் கணக்கை உருவாக்கி, பின்னர் உள்நுழையவும்.</string>
+    <!-- needs_review -->
+    <string name="auth_registration_failed">உங்கள் பதிவை முடிக்க முடியவில்லை. மீண்டும் முயலவும்.</string>
+    <!-- needs_review -->
+    <string name="auth_registration_cancelled">உங்கள் பதிவு வெற்றிபெறவில்லை.</string>
+    <!-- needs_review -->
+    <string name="auth_device_sign_out_failed">அந்தச் சாதனத்திலிருந்து வெளியேற்ற முடியவில்லை. மீண்டும் முயலவும்.</string>
+    <!-- needs_review -->
+    <string name="auth_profile_setup_pending">வரவேற்கிறோம்! உங்கள் சுயவிவர அமைப்பு விரைவில் வரும்.</string>
+    <!-- needs_review -->
+    <string name="auth_multi_profile_pending">சுயவிவரத் தேர்வு விரைவில் வரும்; உங்கள் இயல்புநிலைச் சுயவிவரம் பயன்படுத்தப்படுகிறது.</string>
+    <!-- needs_review -->
+    <string name="auth_phone_code_sent">பதிவுசெய்த மொபைல் எண்ணுக்கு OTP அனுப்பப்பட்டது</string>
+    <!-- needs_review -->
+    <string name="auth_phone_code_send_failed">குறியீட்டை அனுப்ப முடியவில்லை. மீண்டும் முயலவும்.</string>
+    <!-- needs_review -->
+    <string name="auth_phone_login_unavailable">மொபைல் மூலம் உள்நுழைவு தற்போது கிடைக்கவில்லை.</string>
+    <!-- needs_review -->
+    <string name="auth_social_login_failed">உள்நுழைவு தோல்வியடைந்தது. மீண்டும் முயலவும்.</string>
+    <!-- needs_review -->
+    <string name="auth_apple_email_required">Apple மூலம் உள்நுழைய மின்னஞ்சலைப் பகிர் விருப்பத்தை இயக்கவும்.</string>
+
+    <!-- Errors (AppError). %1$s, where present, is the brand name. -->
+    <string name="error_offline">நீங்கள் ஆஃப்லைனில் இருப்பதாகத் தெரிகிறது. இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்.</string>
+    <string name="error_timeout">சர்வர் பதிலளிக்க அதிக நேரம் எடுத்தது. மீண்டும் முயலவும்.</string>
+    <string name="error_unreachable">%1$s-ஐ அணுக முடியவில்லை. மீண்டும் முயலவும்.</string>
+    <string name="error_session_expired">உங்கள் அமர்வு காலாவதியானது. மீண்டும் உள்நுழையவும்.</string>
+    <string name="error_generic">ஏற்றும்போது ஏதோ தவறு நடந்தது. மீண்டும் முயலவும்.</string>
+
+    <!-- Appearance and design-system reference (Android screens) -->
+
+    <!-- Plurals -->
+    <plurals name="home_followers">
+        <item quantity="one">%1$s பின்தொடர்பவர்</item>
+        <item quantity="other">%1$s பின்தொடர்பவர்கள்</item>
+    </plurals>
+    <plurals name="movies_count">
+        <item quantity="one">**%1$s** திரைப்படம் · உலகெங்கிலும் இருந்து தேர்ந்தெடுக்கப்பட்டது</item>
+        <item quantity="other">**%1$s** திரைப்படங்கள் · உலகெங்கிலும் இருந்து தேர்ந்தெடுக்கப்பட்டவை</item>
+    </plurals>
+</resources>
