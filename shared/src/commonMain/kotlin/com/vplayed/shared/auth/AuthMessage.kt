@@ -3,15 +3,15 @@ package com.vplayed.shared.auth
 import com.vplayed.shared.core.error.AppError
 
 /**
- * Something the sign-in screens tell the user. Shared code never holds user-facing text of its own:
- * it passes on the server's words when they are safe to show, else an [AuthMessageKey] that each app
- * turns into its own string (AndroidJP `strings.xml`, VPlayed `Localizable.xcstrings`).
+ * Something the sign-in screens tell the user: the server's words when they are safe to show, else
+ * an [AuthMessageKey]. The text for each key is in the shared string catalog
+ * (`AuthMessageKey.resource` in `com.vplayed.shared.l10n`), which both apps read.
  */
 sealed interface AuthMessage {
     /** The server's explanation, already checked by [serverOr]. */
     data class Server(val text: String) : AuthMessage
 
-    /** A message the app supplies the text for. */
+    /** A message whose text comes from the shared string catalog. */
     data class Localized(val key: AuthMessageKey) : AuthMessage
 
     companion object {

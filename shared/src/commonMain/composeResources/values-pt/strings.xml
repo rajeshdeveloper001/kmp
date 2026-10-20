@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from VPlayed Localizable.xcstrings (reference) and AndroidJP strings.xml.
+     The one string catalog for AndroidJP and VPlayed. Placeholders are %1$s, %2$s… only:
+     apps pass numbers already formatted for the locale. A literal percent sign is a single %.
+     Values are not Android resources: write apostrophes plainly, never \'. -->
+<resources>
+
+    <!-- Common -->
+    <string name="common_back">Voltar</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_change">Alterar</string>
+    <string name="common_close">Fechar</string>
+    <string name="common_continue">Continuar</string>
+    <string name="common_try_again">Tentar novamente</string>
+    <string name="common_refresh">Atualizar</string>
+    <string name="common_details">Detalhes</string>
+    <string name="common_coming_soon">Em breve</string>
+    <string name="common_coming_soon_caps">EM BREVE</string>
+    <string name="common_view_all">Ver tudo</string>
+    <string name="common_title">Título</string>
+    <string name="common_sign_in">Entrar</string>
+    <string name="common_sign_out">Sair</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Início</string>
+    <string name="nav_promos">Promos</string>
+    <string name="nav_subscription">Assinatura</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_movies">Filmes</string>
+    <string name="nav_language">Idioma</string>
+    <string name="nav_channel">Canal</string>
+    <string name="nav_bulk_purchase">Compra em pacote</string>
+    <string name="nav_voice_search">Busca por voz</string>
+    <string name="nav_notifications">Notificações</string>
+    <string name="placeholder_detail">Detalhes: %1$s</string>
+    <string name="placeholder_screen_not_built">Esta tela ainda não foi criada.</string>
+    <string name="placeholder_not_available">Isso ainda não está disponível nesta versão.</string>
+
+    <!-- Content kinds -->
+    <string name="content_kind_video">Vídeo</string>
+    <string name="content_kind_series">Série</string>
+    <string name="content_kind_micro_series">Microssérie</string>
+    <string name="content_kind_promo">Promo</string>
+    <string name="content_kind_audio">Áudio</string>
+    <string name="content_kind_live">Ao vivo</string>
+
+    <!-- Splash -->
+    <string name="splash_tagline">Transmita a experiência</string>
+    <string name="splash_skip_intro">Pular introdução</string>
+
+    <!-- Menu and language -->
+    <string name="menu_open">Menu</string>
+    <string name="menu_close">Fechar menu</string>
+    <string name="menu_signed_in_as">Conectado como %1$s</string>
+    <string name="menu_sign_out_confirm">Sair do %1$s?</string>
+    <string name="language_footer">Títulos e descrições do %1$s também mudam quando estiverem disponíveis nesse idioma.</string>
+
+    <!-- Home -->
+    <string name="home_featured">Destaques</string>
+    <string name="home_watch_now">Assistir agora</string>
+    <string name="home_add_to_watchlist">Adicionar %1$s à sua lista</string>
+    <string name="home_slide_position">Slide %1$s de %2$s</string>
+    <string name="home_badge_live">AO VIVO</string>
+    <string name="home_badge_upcoming">EM BREVE</string>
+    <string name="home_watch_live">Assistir ao vivo</string>
+    <string name="home_set_reminder">Lembrar</string>
+    <string name="home_follow">Seguir</string>
+    <string name="home_following">Seguindo</string>
+    <string name="home_unfollow">Deixar de seguir</string>
+    <string name="home_unfollow_confirm">Deixar de seguir %1$s?</string>
+    <string name="home_followed_toast">Você começou a seguir este canal</string>
+    <string name="home_unfollowed_toast">Você deixou de seguir este canal</string>
+    <string name="home_explore_bundles">Explorar pacotes</string>
+    <string name="home_save_up_to">Economize até %1$s%</string>
+    <string name="home_price">Preço %1$s</string>
+    <string name="home_rank_label">Número %1$s, %2$s</string>
+    <string name="home_shows_all_titles_in">Mostra todos os títulos em %1$s</string>
+    <string name="home_loading">Carregando o Início</string>
+    <string name="home_loading_more">Carregando mais</string>
+    <string name="home_load_failed">Não foi possível carregar o Início</string>
+    <string name="home_load_more_failed">Não foi possível carregar mais. Toque para tentar de novo.</string>
+    <string name="home_empty_title">Seu Início está vazio</string>
+    <string name="home_empty_message">Ainda não há nada para mostrar. Volte em breve.</string>
+    <string name="home_sign_in_watchlist">Entre para adicionar à sua lista</string>
+    <string name="home_sign_in_follow">Entre para seguir canais</string>
+    <string name="home_sign_in_reminder">Entre para definir um lembrete</string>
+
+    <!-- Movies -->
+    <string name="movies_load_failed">Não foi possível carregar os filmes</string>
+    <string name="movies_empty">Ainda não há filmes</string>
+    <string name="movies_loading">Carregando filmes</string>
+
+    <!-- Sign in -->
+    <string name="login_step">Etapa %1$s de 3</string>
+    <string name="login_title">Entre ou crie sua conta</string>
+    <string name="login_google">Cadastre-se com o Google</string>
+    <string name="login_apple">Cadastre-se com a Apple</string>
+    <string name="login_divider_email">ou continue com e-mail</string>
+    <!-- needs_review -->
+    <string name="login_divider_phone">ou continue com o número de telemóvel</string>
+    <string name="login_email_label">E-mail</string>
+    <string name="login_email_help">Enviaremos um código de 6 dígitos para confirmar que é você.</string>
+    <!-- needs_review -->
+    <string name="login_phone_label">Número de telemóvel</string>
+    <!-- needs_review -->
+    <string name="login_phone_country">Indicativo do país</string>
+    <!-- needs_review -->
+    <string name="login_phone_help">Enviaremos um SMS com um código de 6 dígitos para confirmar que é você.</string>
+    <string name="login_continue_as_guest">Continuar como convidado</string>
+    <string name="login_terms">Tenho mais de 18 anos e, ao continuar, concordo com os [Termos de uso](terms) e a [Política de privacidade](privacy).</string>
+    <!-- needs_review -->
+    <string name="session_expired">Sessão expirada. Inicie sessão para continuar</string>
+
+    <!-- Verification code -->
+    <string name="otp_title">Confirme que é você</string>
+    <string name="otp_note">Digite o código de 6 dígitos que enviamos para %1$s</string>
+    <string name="otp_code_description">Código de verificação</string>
+    <string name="otp_resend_prompt">Não recebeu o código?</string>
+    <string name="otp_resend">Reenviar</string>
+    <string name="otp_resend_in">Reenviar em %1$s</string>
+    <string name="otp_verify">Verificar e continuar</string>
+    <!-- needs_review -->
+    <string name="otp_devices_title">Limite de dispositivos atingido</string>
+    <!-- needs_review -->
+    <string name="otp_devices_note">Sua conta está conectada no número máximo de dispositivos permitido. Saia de um deles para continuar.</string>
+    <!-- needs_review -->
+    <string name="otp_device_this_device">Este dispositivo</string>
+    <!-- needs_review -->
+    <string name="otp_devices_sign_out_all">Sair de todos os dispositivos</string>
+    <string name="otp_success_title">Tudo pronto</string>
+    <string name="otp_success_note">Sua conta %1$s está pronta.</string>
+    <string name="otp_success_progress">Entrando…</string>
+
+    <!-- Registration -->
+    <!-- needs_review -->
+    <string name="register_title">Fale-nos sobre si</string>
+    <!-- needs_review -->
+    <string name="register_note">Complete o seu perfil para terminar de criar a sua conta %1$s.</string>
+    <!-- needs_review -->
+    <string name="register_name_label">Nome completo</string>
+    <!-- needs_review -->
+    <string name="register_name_placeholder">Introduza o seu nome</string>
+    <!-- needs_review -->
+    <string name="register_referral_toggle">Tem um código de indicação?</string>
+    <!-- needs_review -->
+    <string name="register_referral_label">Código de indicação</string>
+    <!-- needs_review -->
+    <string name="register_referral_placeholder">Introduza o código de indicação</string>
+    <!-- needs_review -->
+    <string name="register_submit">Concluir configuração</string>
+    <!-- needs_review -->
+    <string name="register_success_title">Está tudo pronto, %1$s</string>
+
+    <!-- Validation -->
+    <string name="validation_email_invalid">Digite um endereço de e-mail válido</string>
+    <!-- needs_review -->
+    <string name="validation_email_required">O e-mail é obrigatório</string>
+    <!-- needs_review -->
+    <string name="validation_phone_india">Introduza um número de telemóvel válido com 10 dígitos</string>
+    <!-- needs_review -->
+    <string name="validation_phone_invalid">Número de telemóvel inválido</string>
+    <!-- needs_review -->
+    <string name="validation_phone_required">O número de telemóvel é obrigatório</string>
+    <!-- needs_review -->
+    <string name="validation_name_required">Introduza o seu nome.</string>
+    <!-- needs_review -->
+    <string name="validation_name_too_short">O nome deve ter pelo menos 2 caracteres.</string>
+
+    <!-- Sign-in messages (AuthMessageKey). %1$s, where present, is the brand name. -->
+    <string name="auth_device_limit">Você está conectado no número máximo de dispositivos. Saia em outro dispositivo e tente novamente.</string>
+    <!-- needs_review -->
+    <string name="auth_login_failed">Não foi possível fazer seu login. Tente novamente.</string>
+    <!-- needs_review -->
+    <string name="auth_otp_invalid">Código incorreto. Tente novamente.</string>
+    <string name="auth_registration_required">Este e-mail ainda não está cadastrado. Crie sua conta no site do %1$s e depois entre.</string>
+    <!-- needs_review -->
+    <string name="auth_registration_failed">Não foi possível concluir o seu registo. Tente novamente.</string>
+    <!-- needs_review -->
+    <string name="auth_registration_cancelled">O seu registo não foi concluído.</string>
+    <!-- needs_review -->
+    <string name="auth_device_sign_out_failed">Não foi possível desconectar esse dispositivo. Tente novamente.</string>
+    <!-- needs_review -->
+    <string name="auth_profile_setup_pending">Boas-vindas! A configuração do seu perfil chegará em breve.</string>
+    <!-- needs_review -->
+    <string name="auth_multi_profile_pending">A escolha de perfil chegará em breve; seu perfil padrão está sendo usado.</string>
+    <!-- needs_review -->
+    <string name="auth_phone_code_sent">O código foi enviado para o número de telemóvel registado</string>
+    <!-- needs_review -->
+    <string name="auth_phone_code_send_failed">Não foi possível enviar o código. Tente novamente.</string>
+    <!-- needs_review -->
+    <string name="auth_phone_login_unavailable">O início de sessão por telemóvel não está disponível de momento.</string>
+    <!-- needs_review -->
+    <string name="auth_social_login_failed">Falha ao iniciar sessão. Tente novamente.</string>
+    <!-- needs_review -->
+    <string name="auth_apple_email_required">Ative a opção Partilhar e-mail para iniciar sessão com a Apple.</string>
+
+    <!-- Errors (AppError). %1$s, where present, is the brand name. -->
+    <string name="error_offline">Parece que você está offline. Verifique sua conexão e tente novamente.</string>
+    <string name="error_timeout">O servidor demorou muito para responder. Tente novamente.</string>
+    <string name="error_unreachable">Não foi possível conectar ao %1$s. Tente novamente.</string>
+    <string name="error_session_expired">Sua sessão expirou. Entre novamente.</string>
+    <string name="error_generic">Algo deu errado ao carregar. Tente novamente.</string>
+
+    <!-- Appearance and design-system reference (Android screens) -->
+
+    <!-- Plurals -->
+    <plurals name="home_followers">
+        <item quantity="one">%1$s seguidor</item>
+        <item quantity="many">%1$s seguidores</item>
+        <item quantity="other">%1$s seguidores</item>
+    </plurals>
+    <plurals name="movies_count">
+        <item quantity="one">**%1$s** filme · selecionado do mundo todo</item>
+        <item quantity="many">**%1$s** filmes · selecionados do mundo todo</item>
+        <item quantity="other">**%1$s** filmes · selecionados do mundo todo</item>
+    </plurals>
+</resources>
