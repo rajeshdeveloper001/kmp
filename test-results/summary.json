@@ -1,6 +1,6 @@
 {
-    "executionId": "EXEC-1792066420529",
-    "timestamp": "2026-10-15T12:13:40.530378Z",
+    "executionId": "EXEC-1792067417360",
+    "timestamp": "2026-10-15T12:30:17.361316Z",
     "appVersion": "3.0.0",
     "platform": "KMP (JVM 11 / Android Host & Apple Native)",
     "totalTests": 39,
@@ -9,7 +9,7 @@
     "skippedCount": 0,
     "passPercentage": 100.0,
     "coveragePercentage": 95.92,
-    "durationMs": 31,
+    "durationMs": 61,
     "results": [
         {
             "testId": "API-AUTH-001",
@@ -21,7 +21,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 1,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -38,7 +38,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 2,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -55,7 +55,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -72,7 +72,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -89,7 +89,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -106,7 +106,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -123,8 +123,8 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
-            "durationMs": 5,
+            "timestamp": "2026-10-15T12:30:17.361316Z",
+            "durationMs": 4,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
                 "GET mediaview/api/v1/homebanners"
@@ -140,8 +140,8 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
-            "durationMs": 4,
+            "timestamp": "2026-10-15T12:30:17.361316Z",
+            "durationMs": 20,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
                 "GET mediaview/api/v1/home"
@@ -157,8 +157,8 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
-            "durationMs": 2,
+            "timestamp": "2026-10-15T12:30:17.361316Z",
+            "durationMs": 5,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
                 "GET mediaview/api/v1/home/all/section-1"
@@ -174,7 +174,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -191,7 +191,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -208,7 +208,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -225,7 +225,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -242,7 +242,7 @@
             "actualBehavior": "Contract verified against specification with valid headers and JSON schema",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.EndpointContractTest.kt",
             "associatedApiCalls": [
@@ -259,7 +259,7 @@
             "actualBehavior": "Real-time OTP success contract confirmed valid: tokens, _id (6ad0a6d715448c1f773fe0c1), unique_user_id (1033437927), default_profile._id (6ad0a6e115448c2e343fe0e7), isNewUsers (true) all match",
             "status": "PASSED",
             "severity": "CRITICAL",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 5,
             "sourceFile": "com.vplayed.shared.auth.AuthRepositoryTest.kt",
             "associatedApiCalls": [
@@ -276,7 +276,7 @@
             "actualBehavior": "Validated: refusal mapping extracts envelope message 'Invalid OTP.' and returns OtpVerificationResult.Rejected",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 2,
             "sourceFile": "com.vplayed.shared.auth.AuthRepositoryTest.kt",
             "associatedApiCalls": [
@@ -293,7 +293,7 @@
             "actualBehavior": "Real-time homebanners contract verified: 3 hero banners parsed with correct ShowType and high-res video banner URLs",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 3,
             "sourceFile": "com.vplayed.shared.home.HomeMapperTest.kt",
             "associatedApiCalls": [
@@ -310,7 +310,7 @@
             "actualBehavior": "EmailValidationResult.INVALID_FORMAT received and submit blocked",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.auth.EmailLoginController.kt"
         },
@@ -324,7 +324,7 @@
             "actualBehavior": "Strict 6-digit requirement satisfied",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.auth.OtpController.kt"
         },
@@ -338,7 +338,7 @@
             "actualBehavior": "Initial load state transitioned cleanly",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 0,
             "sourceFile": "com.vplayed.shared.home.HomeFeedController.kt"
         },
@@ -352,8 +352,8 @@
             "actualBehavior": "Session successfully evicted on token rejection",
             "status": "PASSED",
             "severity": "CRITICAL",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
-            "durationMs": 0,
+            "timestamp": "2026-10-15T12:30:17.361316Z",
+            "durationMs": 1,
             "sourceFile": "com.vplayed.shared.session.SessionManager.kt"
         },
         {
@@ -366,7 +366,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-splash-001"
@@ -382,7 +382,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-login-001"
@@ -398,7 +398,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-otp-001"
@@ -414,7 +414,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-device-001"
@@ -430,7 +430,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-home-001"
@@ -446,7 +446,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-player-001"
@@ -462,7 +462,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-movies-001"
@@ -478,7 +478,7 @@
             "actualBehavior": "State representation validated: padding, aspect ratio, text keys, and click actions mapped",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 8,
             "evidencePaths": [
                 "docs/quality/UI_TESTING.md#ui-common-001"
@@ -494,7 +494,7 @@
             "actualBehavior": "Journey completed: state transitions emitted in correct chronological order",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 15,
             "evidencePaths": [
                 "docs/quality/E2E_TESTING.md#e2e-auth-001"
@@ -510,7 +510,7 @@
             "actualBehavior": "Journey completed: state transitions emitted in correct chronological order",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 15,
             "evidencePaths": [
                 "docs/quality/E2E_TESTING.md#e2e-auth-002"
@@ -526,7 +526,7 @@
             "actualBehavior": "Journey completed: state transitions emitted in correct chronological order",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 15,
             "evidencePaths": [
                 "docs/quality/E2E_TESTING.md#e2e-browse-001"
@@ -542,7 +542,7 @@
             "actualBehavior": "Journey completed: state transitions emitted in correct chronological order",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 15,
             "evidencePaths": [
                 "docs/quality/E2E_TESTING.md#e2e-session-001"
@@ -558,7 +558,7 @@
             "actualBehavior": "Journey completed: state transitions emitted in correct chronological order",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 15,
             "evidencePaths": [
                 "docs/quality/E2E_TESTING.md#e2e-offline-001"
@@ -574,7 +574,7 @@
             "actualBehavior": "Validated via OkHttpEngineTest with local ServerSocket",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 25,
             "sourceFile": "com.vplayed.shared.core.network.OkHttpEngineTest.kt"
         },
@@ -588,7 +588,7 @@
             "actualBehavior": "Validated via FlowWatcherTest on iOS Simulator Arm64",
             "status": "PASSED",
             "severity": "HIGH",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 20,
             "sourceFile": "com.vplayed.shared.core.interop.FlowWatcherTest.kt"
         },
@@ -599,11 +599,11 @@
             "category": "PERFORMANCE_STABILITY",
             "scenario": "AES-256-CBC 100-round encryption/decryption throughput",
             "expectedBehavior": "Average round-trip latency < 50ms",
-            "actualBehavior": "Average latency: 0.113 ms per round-trip",
+            "actualBehavior": "Average latency: 0.200 ms per round-trip",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
-            "durationMs": 11
+            "timestamp": "2026-10-15T12:30:17.361316Z",
+            "durationMs": 20
         },
         {
             "testId": "PERF-JSON-001",
@@ -612,11 +612,11 @@
             "category": "PERFORMANCE_STABILITY",
             "scenario": "SharedJson parsing throughput under high-frequency feeds",
             "expectedBehavior": "Average parsing time < 5ms per payload",
-            "actualBehavior": "Average latency: 0.001 ms",
+            "actualBehavior": "Average latency: 0.005 ms",
             "status": "PASSED",
             "severity": "MEDIUM",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
-            "durationMs": 0
+            "timestamp": "2026-10-15T12:30:17.361316Z",
+            "durationMs": 2
         },
         {
             "testId": "SEC-LOG-001",
@@ -628,7 +628,7 @@
             "actualBehavior": "Verified: 0 tokens, passphrases, or OTP codes detected in logs",
             "status": "PASSED",
             "severity": "CRITICAL",
-            "timestamp": "2026-10-15T12:13:40.530378Z",
+            "timestamp": "2026-10-15T12:30:17.361316Z",
             "durationMs": 5,
             "sourceFile": "com.vplayed.shared.core.network.RequestLogging.kt"
         }

@@ -1,7 +1,7 @@
 # Automated Quality Framework Execution Summary
 
-- **Execution ID:** `EXEC-1792066420529`
-- **Timestamp:** 2026-10-15T12:13:40.530378Z
+- **Execution ID:** `EXEC-1792067417360`
+- **Timestamp:** 2026-10-15T12:30:17.361316Z
 - **Platform:** KMP (JVM 11 / Android Host & Apple Native)
 - **App Version:** 3.0.0
 - **Total Tests Executed:** 39
@@ -9,7 +9,7 @@
 - **Failed:** 0
 - **Skipped:** 0
 - **Line Test Coverage:** 95.92%
-- **Execution Duration:** 31 ms
+- **Execution Duration:** 61 ms
 
 ## Feature Matrix
 
@@ -53,9 +53,9 @@
 | `API-AUTH-004` | API_CONTRACT | users | ✅ PASSED | 0 | Validate POST users/api/v1/auth/logout-device request headers, URL pattern, and response schema contract |
 | `API-AUTH-005` | API_CONTRACT | users | ✅ PASSED | 0 | Validate POST users/api/v1/auth/generate request headers, URL pattern, and response schema contract |
 | `API-AUTH-006` | API_CONTRACT | users | ✅ PASSED | 0 | Validate POST users/api/v1/auth/logout request headers, URL pattern, and response schema contract |
-| `API-HOME-001` | API_CONTRACT | mediaview | ✅ PASSED | 5 | Validate GET mediaview/api/v1/homebanners request headers, URL pattern, and response schema contract |
-| `API-HOME-002` | API_CONTRACT | mediaview | ✅ PASSED | 4 | Validate GET mediaview/api/v1/home request headers, URL pattern, and response schema contract |
-| `API-HOME-003` | API_CONTRACT | mediaview | ✅ PASSED | 2 | Validate GET mediaview/api/v1/home/all/section-1 request headers, URL pattern, and response schema contract |
+| `API-HOME-001` | API_CONTRACT | mediaview | ✅ PASSED | 4 | Validate GET mediaview/api/v1/homebanners request headers, URL pattern, and response schema contract |
+| `API-HOME-002` | API_CONTRACT | mediaview | ✅ PASSED | 20 | Validate GET mediaview/api/v1/home request headers, URL pattern, and response schema contract |
+| `API-HOME-003` | API_CONTRACT | mediaview | ✅ PASSED | 5 | Validate GET mediaview/api/v1/home/all/section-1 request headers, URL pattern, and response schema contract |
 | `API-STUDIO-001` | API_CONTRACT | studios | ✅ PASSED | 0 | Validate POST studios/api/v1/follow_studio request headers, URL pattern, and response schema contract |
 | `API-MOVIES-001` | API_CONTRACT | mediaview | ✅ PASSED | 0 | Validate GET mediaview/api/v1/sho-details/media/1 request headers, URL pattern, and response schema contract |
 | `API-COMMON-001` | API_CONTRACT | mediaview | ✅ PASSED | 0 | Validate GET mediaview/api/v1/common request headers, URL pattern, and response schema contract |
@@ -67,7 +67,7 @@
 | `LOGIC-AUTH-001` | APP_LOGIC | Authentication Logic | ✅ PASSED | 0 | Input malformed email and lose field focus |
 | `LOGIC-AUTH-002` | APP_LOGIC | Authentication Logic | ✅ PASSED | 0 | Verify OTP code length constraint (must be exactly 6 digits) |
 | `LOGIC-HOME-001` | APP_LOGIC | Home Feed State | ✅ PASSED | 0 | Initial load of home banners and section rows |
-| `LOGIC-SESSION-001` | APP_LOGIC | Session Lifecycle | ✅ PASSED | 0 | Decision D21: 401 Unauthorized token eviction |
+| `LOGIC-SESSION-001` | APP_LOGIC | Session Lifecycle | ✅ PASSED | 1 | Decision D21: 401 Unauthorized token eviction |
 | `UI-SPLASH-001` | UI_RENDERING | Splash Screen | ✅ PASSED | 8 | Render animated logo and resolve session status from secure storage |
 | `UI-LOGIN-001` | UI_RENDERING | Login Screen | ✅ PASSED | 8 | Render email text field with floating placeholder, continue CTA, and guest button |
 | `UI-OTP-001` | UI_RENDERING | OTP Verification Screen | ✅ PASSED | 8 | Render 6 separate pin boxes, resend countdown timer, and inline error banner |
@@ -83,12 +83,12 @@
 | `E2E-OFFLINE-001` | NAVIGATION_E2E | End-to-End Navigation | ✅ PASSED | 15 | User Journey 5: Offline Launch -> Cached Home Rows Shown -> Reconnection -> Silent Geo Refresh |
 | `PLAT-ANDROID-001` | PLATFORM_COMPATIBILITY | Android OkHttp Engine | ✅ PASSED | 25 | OkHttp client real loopback socket wire headers and timeout handling |
 | `PLAT-IOS-001` | PLATFORM_COMPATIBILITY | Apple Darwin Engine & FlowWatcher | ✅ PASSED | 20 | Kotlin Flow and StateFlow observation from Swift via FlowWatcher |
-| `PERF-CRYPTO-001` | PERFORMANCE_STABILITY | Transport Cryptography | ✅ PASSED | 11 | AES-256-CBC 100-round encryption/decryption throughput |
-| `PERF-JSON-001` | PERFORMANCE_STABILITY | Serialization Engine | ✅ PASSED | 0 | SharedJson parsing throughput under high-frequency feeds |
+| `PERF-CRYPTO-001` | PERFORMANCE_STABILITY | Transport Cryptography | ✅ PASSED | 20 | AES-256-CBC 100-round encryption/decryption throughput |
+| `PERF-JSON-001` | PERFORMANCE_STABILITY | Serialization Engine | ✅ PASSED | 2 | SharedJson parsing throughput under high-frequency feeds |
 | `SEC-LOG-001` | SECURITY_PRIVACY | Security & Privacy | ✅ PASSED | 5 | Zero-leak audit: Verify tokens, codes, and passphrases are never logged |
 
 ## Evidence Directory Structure
-All execution evidence is persisted under `test-results/EXEC-1792066420529/`:
+All execution evidence is persisted under `test-results/EXEC-1792067417360/`:
 - `summary.json`: Complete machine-readable execution report.
 - `summary.md`: Human-readable quality dashboard.
 - `test-results.xml`: Standard JUnit XML integration.

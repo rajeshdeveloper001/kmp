@@ -2,6 +2,6 @@ Java Runtime: 25.0.3
 Java VM: OpenJDK 64-Bit Server VM (Eclipse Adoptium)
 OS: Mac OS X 26.5.1 (aarch64)
 Max Memory: 512 MB
-Total Memory: 40 MB
-Free Memory: 2 MB
+Total Memory: 47 MB
+Free Memory: 34 MB
 Available Processors: 10

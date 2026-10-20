@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="QualityFramework" tests="39" failures="0" skipped="0" time="0.031">
+<testsuite name="QualityFramework" tests="39" failures="0" skipped="0" time="0.061">
   <testcase id="API-AUTH-001" name="users: Validate POST users/api/v1/auth/email-login request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.001">
   </testcase>
   <testcase id="API-AUTH-002" name="users: Validate POST users/api/v1/auth/verifyEmailOtp request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.002">
@@ -12,11 +12,11 @@
   </testcase>
   <testcase id="API-AUTH-006" name="users: Validate POST users/api/v1/auth/logout request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
   </testcase>
-  <testcase id="API-HOME-001" name="mediaview: Validate GET mediaview/api/v1/homebanners request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.005">
+  <testcase id="API-HOME-001" name="mediaview: Validate GET mediaview/api/v1/homebanners request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.004">
   </testcase>
-  <testcase id="API-HOME-002" name="mediaview: Validate GET mediaview/api/v1/home request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.004">
+  <testcase id="API-HOME-002" name="mediaview: Validate GET mediaview/api/v1/home request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.02">
   </testcase>
-  <testcase id="API-HOME-003" name="mediaview: Validate GET mediaview/api/v1/home/all/section-1 request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.002">
+  <testcase id="API-HOME-003" name="mediaview: Validate GET mediaview/api/v1/home/all/section-1 request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.005">
   </testcase>
   <testcase id="API-STUDIO-001" name="studios: Validate POST studios/api/v1/follow_studio request headers, URL pattern, and response schema contract" classname="com.vplayed.quality.API_CONTRACT" time="0.0">
   </testcase>
@@ -40,7 +40,7 @@
   </testcase>
   <testcase id="LOGIC-HOME-001" name="Home Feed State: Initial load of home banners and section rows" classname="com.vplayed.quality.APP_LOGIC" time="0.0">
   </testcase>
-  <testcase id="LOGIC-SESSION-001" name="Session Lifecycle: Decision D21: 401 Unauthorized token eviction" classname="com.vplayed.quality.APP_LOGIC" time="0.0">
+  <testcase id="LOGIC-SESSION-001" name="Session Lifecycle: Decision D21: 401 Unauthorized token eviction" classname="com.vplayed.quality.APP_LOGIC" time="0.001">
   </testcase>
   <testcase id="UI-SPLASH-001" name="Splash Screen: Render animated logo and resolve session status from secure storage" classname="com.vplayed.quality.UI_RENDERING" time="0.008">
   </testcase>
@@ -72,9 +72,9 @@
   </testcase>
   <testcase id="PLAT-IOS-001" name="Apple Darwin Engine & FlowWatcher: Kotlin Flow and StateFlow observation from Swift via FlowWatcher" classname="com.vplayed.quality.PLATFORM_COMPATIBILITY" time="0.02">
   </testcase>
-  <testcase id="PERF-CRYPTO-001" name="Transport Cryptography: AES-256-CBC 100-round encryption/decryption throughput" classname="com.vplayed.quality.PERFORMANCE_STABILITY" time="0.011">
+  <testcase id="PERF-CRYPTO-001" name="Transport Cryptography: AES-256-CBC 100-round encryption/decryption throughput" classname="com.vplayed.quality.PERFORMANCE_STABILITY" time="0.02">
   </testcase>
-  <testcase id="PERF-JSON-001" name="Serialization Engine: SharedJson parsing throughput under high-frequency feeds" classname="com.vplayed.quality.PERFORMANCE_STABILITY" time="0.0">
+  <testcase id="PERF-JSON-001" name="Serialization Engine: SharedJson parsing throughput under high-frequency feeds" classname="com.vplayed.quality.PERFORMANCE_STABILITY" time="0.002">
   </testcase>
   <testcase id="SEC-LOG-001" name="Security & Privacy: Zero-leak audit: Verify tokens, codes, and passphrases are never logged" classname="com.vplayed.quality.SECURITY_PRIVACY" time="0.005">
   </testcase>
