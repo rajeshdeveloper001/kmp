@@ -17,7 +17,7 @@ enum class SignOutReason {
     /** The user signed out (logout), or the app ended the session. */
     USER,
 
-    /** The server rejected the access token (401) on a request that carried it (decision D21). */
+    /** The server rejected the access token (401) and it could not be refreshed (decision D21, revised). */
     EXPIRED,
 }
 
@@ -47,6 +47,9 @@ sealed interface SessionStatus {
 class SessionManager(private val store: SecureStore) {
 
     private val mutex = Mutex()
+
+    /** One token refresh at a time. Always taken before [mutex], never while holding it. */
+    private val refreshMutex = Mutex()
     private val _status = MutableStateFlow<SessionStatus>(SessionStatus.Loading)
 
     val status: StateFlow<SessionStatus> = _status.asStateFlow()
@@ -93,6 +96,57 @@ class SessionManager(private val store: SecureStore) {
             store.delete(SecureKey.SESSION)
             _status.value = SessionStatus.SignedOut(reason)
         }
+    }
+
+    /**
+     * Starts [session] only when nobody is signed in, and stores it. For sessions nobody asked for
+     * (the automatic guest session): one that arrives after a sign-in must not replace it.
+     * Returns whether it was started.
+     */
+    suspend fun signInIfSignedOut(session: AuthSession): Boolean {
+        awaitLoaded()
+        return mutex.withLock {
+            if (_status.value !is SessionStatus.SignedOut) return@withLock false
+            if (!store.write(SecureKey.SESSION, SessionCodec.encode(session))) store.delete(SecureKey.SESSION)
+            _status.value = SessionStatus.SignedIn(session)
+            true
+        }
+    }
+
+    /**
+     * A request carrying [rejectedAccessToken] got a 401. Tries once to get a new access token with
+     * the session's refresh token (one refresh at a time; requests that fail together share it) and
+     * returns true when the request should be sent again:
+     * - another request already replaced the token → true;
+     * - no refresher, no refresh token, or the server refuses it → the session expires, false;
+     * - no usable answer (offline) → the session is kept, false.
+     */
+    internal suspend fun recoverFromUnauthorized(rejectedAccessToken: String, refresher: AccessTokenRefresher?): Boolean =
+        refreshMutex.withLock {
+            val current = session ?: return@withLock false
+            if (current.accessToken != rejectedAccessToken) return@withLock true
+            val refreshToken = current.refreshToken?.takeIf { it.isNotBlank() }
+            if (refresher == null || refreshToken == null) {
+                expire(rejectedAccessToken)
+                return@withLock false
+            }
+            when (val result = refresher.refresh(refreshToken)) {
+                is TokenRefreshResult.Refreshed -> replaceAccessToken(rejectedAccessToken, result.accessToken)
+                TokenRefreshResult.Rejected -> {
+                    expire(rejectedAccessToken)
+                    false
+                }
+                is TokenRefreshResult.Failed -> false
+            }
+        }
+
+    /** Swaps the access token of the session that still uses [oldAccessToken] and stores it. */
+    private suspend fun replaceAccessToken(oldAccessToken: String, accessToken: String): Boolean = mutex.withLock {
+        val current = session?.takeIf { it.accessToken == oldAccessToken } ?: return@withLock false
+        val refreshed = current.copy(accessToken = accessToken)
+        if (!store.write(SecureKey.SESSION, SessionCodec.encode(refreshed))) store.delete(SecureKey.SESSION)
+        _status.value = SessionStatus.SignedIn(refreshed)
+        true
     }
 
     /**

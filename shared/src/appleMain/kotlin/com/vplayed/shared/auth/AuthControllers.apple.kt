@@ -20,3 +20,21 @@ fun OtpController.watchEffects(onEach: (OtpEffect) -> Unit): Closeable = FlowWat
 val EmailLoginController.currentState: EmailLoginState get() = state.value
 
 val OtpController.currentState: OtpState get() = state.value
+
+fun PhoneLoginController.watchState(onEach: (PhoneLoginState) -> Unit): Closeable = FlowWatcher(state).watch(onEach)
+
+fun PhoneLoginController.watchEffects(onEach: (PhoneLoginEffect) -> Unit): Closeable = FlowWatcher(effects).watch(onEach)
+
+fun SocialLoginController.watchState(onEach: (SocialLoginState) -> Unit): Closeable = FlowWatcher(state).watch(onEach)
+
+fun SocialLoginController.watchEffects(onEach: (SocialLoginEffect) -> Unit): Closeable = FlowWatcher(effects).watch(onEach)
+
+val PhoneLoginController.currentState: PhoneLoginState get() = state.value
+
+val SocialLoginController.currentState: SocialLoginState get() = state.value
+
+fun RegistrationController.watchState(onEach: (RegistrationState) -> Unit): Closeable = FlowWatcher(state).watch(onEach)
+
+fun RegistrationController.watchEffects(onEach: (RegistrationEffect) -> Unit): Closeable = FlowWatcher(effects).watch(onEach)
+
+val RegistrationController.currentState: RegistrationState get() = state.value

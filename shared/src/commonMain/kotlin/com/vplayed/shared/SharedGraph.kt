@@ -13,6 +13,15 @@ import com.vplayed.shared.auth.DeviceLimit
 import com.vplayed.shared.auth.EmailLoginController
 import com.vplayed.shared.auth.LogoutResult
 import com.vplayed.shared.auth.OtpController
+import com.vplayed.shared.auth.PhoneAuthRepository
+import com.vplayed.shared.auth.PhoneLoginController
+import com.vplayed.shared.auth.PhoneOtpSender
+import com.vplayed.shared.auth.PendingRegistration
+import com.vplayed.shared.auth.RegistrationController
+import com.vplayed.shared.auth.RegistrationRepository
+import com.vplayed.shared.auth.SocialAuthRepository
+import com.vplayed.shared.auth.SocialCredential
+import com.vplayed.shared.auth.SocialLoginController
 import com.vplayed.shared.core.network.RequestCredentials
 import com.vplayed.shared.core.network.createPlatformHttpEngine
 import com.vplayed.shared.core.platform.DeviceInfo
@@ -29,9 +38,18 @@ import com.vplayed.shared.home.HomeMapper
 import com.vplayed.shared.home.HomeRepository
 import com.vplayed.shared.movies.DefaultMoviesRepository
 import com.vplayed.shared.movies.MoviesRepository
+import com.vplayed.shared.phone.CountryDialCodes
+import com.vplayed.shared.phone.PhoneNumber
+import com.vplayed.shared.profile.DefaultProfileRepository
+import com.vplayed.shared.profile.FirstProfileChooser
+import com.vplayed.shared.profile.ProfileRepository
+import com.vplayed.shared.profile.SessionProfileChooser
+import com.vplayed.shared.session.AccessTokenRefresher
+import com.vplayed.shared.session.GuestSessionKeeper
 import com.vplayed.shared.session.SessionCredentials
 import com.vplayed.shared.session.SessionManager
 import com.vplayed.shared.settings.CommonSettingsRepository
+import com.vplayed.shared.settings.CommonSettingsStore
 import com.vplayed.shared.settings.DefaultCommonSettingsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
@@ -95,12 +113,36 @@ class SharedGraph(
         HttpClientFactory.thirdParty(platform.engineFactory(), config, platform.logger)
     }
 
-    val apiCaller: ApiCaller by lazy { ApiCaller(backendHttpClient, json, sessionManager) }
+    /** Backend requests; a 401 tries one token refresh (`auth/refresh-token`) before it ends the session. */
+    val apiCaller: ApiCaller by lazy {
+        ApiCaller(backendHttpClient, json, sessionManager, AccessTokenRefresher { defaultAuth.refreshAccessToken(it) })
+    }
+
+    private val defaultAuth: DefaultAuthRepository by lazy {
+        DefaultAuthRepository(apiCaller, json, platform.deviceInfo, ::encryptForTransport, config.platform)
+    }
 
     /** Email sign-in, device limit, guest login and logout (Phase 3). */
-    val authRepository: AuthRepository by lazy {
-        DefaultAuthRepository(apiCaller, json, platform.deviceInfo, ::encryptForTransport)
-    }
+    val authRepository: AuthRepository get() = defaultAuth
+
+    /** Phone sign-in (`auth/phone-login`); the SMS itself comes from the app's [PhoneOtpSender]. */
+    val phoneAuthRepository: PhoneAuthRepository get() = defaultAuth
+
+    /** Google / Apple sign-in (`auth/login`). */
+    val socialAuthRepository: SocialAuthRepository get() = defaultAuth
+
+    /** Sign-up of new accounts (`auth/register`, `auth/update-profile`). */
+    val registrationRepository: RegistrationRepository get() = defaultAuth
+
+    /** The account's viewing profiles (`muti-profile/list`). */
+    val profileRepository: ProfileRepository by lazy { DefaultProfileRepository(apiCaller) }
+
+    /**
+     * Picks the profile of each new sign-in before the app stores it: the account's first profile
+     * (no profile picker yet). The sign-in controllers built here use it; AndroidJP passes it to the
+     * ones it builds.
+     */
+    val profileChooser: SessionProfileChooser by lazy { FirstProfileChooser(profileRepository, platform.logger) }
 
     /**
      * An email-step controller with its own main-thread scope, for platforms without a lifecycle
@@ -112,7 +154,35 @@ class SharedGraph(
 
     /** A code-step controller with its own main-thread scope (see [emailLoginController]). */
     fun otpController(email: String, initialDeviceLimit: DeviceLimit?, config: AuthFlowConfig): OtpController =
-        OtpController(email, authRepository, initialDeviceLimit, mainScope(), config)
+        OtpController(email, authRepository, initialDeviceLimit, mainScope(), config, profileChooser)
+
+    /**
+     * A mobile-number step with its own main-thread scope (see [emailLoginController]). The country
+     * starts at [regionCode] (e.g. the device region) when the picker offers it, else India.
+     */
+    fun phoneLoginController(config: AuthFlowConfig, regionCode: String?): PhoneLoginController =
+        PhoneLoginController(phoneAuthRepository, mainScope(), config, CountryDialCodes.forRegion(regionCode) ?: CountryDialCodes.DEFAULT)
+
+    /** A Google / Apple step with its own main-thread scope (see [emailLoginController]). */
+    fun socialLoginController(config: AuthFlowConfig): SocialLoginController =
+        SocialLoginController(socialAuthRepository, mainScope(), config, profileChooser)
+
+    /** A phone code-step controller with its own main-thread scope; it texts the first code through [sender]. */
+    fun phoneOtpController(
+        phone: PhoneNumber,
+        sender: PhoneOtpSender,
+        initialDeviceLimit: DeviceLimit?,
+        config: AuthFlowConfig,
+    ): OtpController =
+        OtpController.phone(phone, phoneAuthRepository, authRepository, sender, initialDeviceLimit, mainScope(), config, profileChooser)
+
+    /** The device step of a Google / Apple sign-in at its device limit, with its own main-thread scope. */
+    fun socialDevicesController(credential: SocialCredential, limit: DeviceLimit, config: AuthFlowConfig): OtpController =
+        OtpController.socialDevices(credential, socialAuthRepository, authRepository, limit, mainScope(), config, profileChooser)
+
+    /** The sign-up form for [registration] (from `OtpEffect.RegistrationNeeded`), with its own main-thread scope. */
+    fun registrationController(registration: PendingRegistration, config: AuthFlowConfig): RegistrationController =
+        RegistrationController(registration, registrationRepository, mainScope(), config, profileChooser)
 
     /** [SessionManager.logout] with this graph's [authRepository]. */
     suspend fun logout(): LogoutResult = sessionManager.logout(authRepository)
@@ -122,10 +192,21 @@ class SharedGraph(
         DefaultGeoRepository(apiCaller, thirdPartyHttpClient, json, geoStore)
     }
 
-    /** Launch-time app settings (`mediaview/api/v1/common`). */
+    /** The last loaded common settings. */
+    val commonSettingsStore: CommonSettingsStore = CommonSettingsStore()
+
+    /** Launch-time app settings (`mediaview/api/v1/common`), kept in [commonSettingsStore]. */
     val commonSettingsRepository: CommonSettingsRepository by lazy {
-        DefaultCommonSettingsRepository(apiCaller, config.platform)
+        DefaultCommonSettingsRepository(apiCaller, config.platform, commonSettingsStore)
     }
+
+    /** The automatic guest session; each app calls `start()` once at launch. */
+    val guestSessionKeeper: GuestSessionKeeper by lazy {
+        GuestSessionKeeper(sessionManager, authRepository, commonSettingsStore, backgroundScope, platform.logger)
+    }
+
+    /** Work that lives as long as the graph (one per process). */
+    private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     /** Maps content JSON for Home and Movies (one image table per app, the device language). */
     private val homeMapper: HomeMapper by lazy {

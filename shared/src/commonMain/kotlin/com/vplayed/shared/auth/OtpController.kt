@@ -1,5 +1,7 @@
 package com.vplayed.shared.auth
 
+import com.vplayed.shared.phone.PhoneNumber
+import com.vplayed.shared.profile.SessionProfileChooser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 enum class OtpStep { Code, Devices, Success }
 
 data class OtpState(
+    /** Where the code went, as shown: the email, or the phone number (`+91 98765 43210`). */
     val email: String,
     val step: OtpStep = OtpStep.Code,
     /** Digits typed so far (0–[AuthFlowConfig.CODE_LENGTH]). */
@@ -27,7 +30,7 @@ data class OtpState(
     val error: AuthMessage? = null,
     /** Bumped for each refused code; the screen shakes once per change (prototype `wpShake`). */
     val shakeCount: Int = 0,
-    /** Informational line on the success step (profile setup / selection are not built yet). */
+    /** Informational line on the success step; none is set at present. */
     val notice: AuthMessage? = null,
     val isVerifying: Boolean = false,
     /** Seconds until a new code can be requested; 0 = Resend is available. */
@@ -39,6 +42,10 @@ data class OtpState(
     val isSigningOut: Boolean = false,
     /** At least one device was signed out: the device step offers Continue. */
     val hasSignedOutDevice: Boolean = false,
+    /** Email, phone (SMS) or social sign-in (device step only). */
+    val channel: OtpChannelKind = OtpChannelKind.EMAIL,
+    /** A neutral line under the code boxes (e.g. "code sent"); cleared by the next edit or action. */
+    val info: AuthMessage? = null,
 ) {
     val canVerify: Boolean get() = code.length == AuthFlowConfig.CODE_LENGTH && !isVerifying
     val canResend: Boolean get() = resendSecondsLeft == 0 && !isResending && !isVerifying
@@ -56,43 +63,63 @@ sealed interface OtpEffect {
 
     /** Leave the code step for the email step (Back, Change). */
     data object NavigateBack : OtpEffect
+
+    /**
+     * The account must finish sign-up first: open the sign-up form (`RegistrationController`) with
+     * [registration]. Nothing is stored yet.
+     */
+    data class RegistrationNeeded(val registration: PendingRegistration) : OtpEffect
 }
 
 /**
- * The code step of email sign-in, the device-limit step and the success step (prototype "VPlayed
- * Sign Up" steps 2–3), shared by AndroidJP's `OtpViewModel` and VPlayed's login adapter. Every
- * answer is read from [AuthRepository]'s typed results; a code is verified only when it has exactly
- * [AuthFlowConfig.CODE_LENGTH] digits and nothing else is in flight. The resend countdown and the
- * success delay run in [scope], so they end with it.
+ * The code step of sign-in, the device-limit step and the success step (prototype "VPlayed Sign Up"
+ * steps 2–3), shared by AndroidJP's `OtpViewModel` and VPlayed's login adapter, for email, phone and
+ * (device step only) Google / Apple sign-in. Every answer is read from typed results; a code is
+ * verified only when it has exactly [AuthFlowConfig.CODE_LENGTH] digits and nothing else is in
+ * flight. The resend countdown and the success delay run in [scope], so they end with it.
  *
- * Starts on the device step when [initialDeviceLimit] is given (the email-login answer was already
- * "device limit") and the step is enabled, else on the code step with the countdown running.
+ * Starts on the device step when [initialDeviceLimit] is given (the login request was already
+ * "device limit") and the step is enabled; else phone sign-in sends the first SMS, and email sign-in
+ * (whose code the email step requested) starts the countdown.
  */
-class OtpController(
-    private val email: String,
-    private val repository: AuthRepository,
+class OtpController internal constructor(
+    private val channel: OtpChannel,
     initialDeviceLimit: DeviceLimit?,
     private val scope: CoroutineScope,
     private val config: AuthFlowConfig,
+    /** Picks the profile of the session before the app gets it (`SharedGraph.profileChooser`). */
+    private val profileChooser: SessionProfileChooser = SessionProfileChooser.KeepDefault,
 ) {
+    /** Email sign-in, after the email step's code request. */
+    constructor(
+        email: String,
+        repository: AuthRepository,
+        initialDeviceLimit: DeviceLimit?,
+        scope: CoroutineScope,
+        config: AuthFlowConfig,
+        profileChooser: SessionProfileChooser = SessionProfileChooser.KeepDefault,
+    ) : this(EmailOtpChannel(email, repository), initialDeviceLimit, scope, config, profileChooser)
+
     /** Where a device-limit answer came from decides what Continue and Back do. */
-    private enum class DeviceFlow { AfterEmailLogin, AfterVerify }
+    private enum class DeviceFlow { AfterLoginRequest, AfterVerify }
 
     private var deviceFlow = DeviceFlow.AfterVerify
     private var countdownJob: Job? = null
 
-    private val mutableState = MutableStateFlow(OtpState(email = email))
+    private val mutableState = MutableStateFlow(OtpState(email = channel.destination, channel = channel.kind))
     val state: StateFlow<OtpState> = mutableState.asStateFlow()
 
     private val effectChannel = Channel<OtpEffect>(Channel.BUFFERED)
     val effects: Flow<OtpEffect> = effectChannel.receiveAsFlow()
 
     init {
-        if (initialDeviceLimit != null && config.deviceSignOutEnabled) {
-            showDevices(initialDeviceLimit, DeviceFlow.AfterEmailLogin)
-        } else {
+        when {
+            initialDeviceLimit != null && config.deviceSignOutEnabled ->
+                // Social sign-in has no code step: its Continue signs in again with the same credential.
+                showDevices(initialDeviceLimit, if (channel.hasCodeStep) DeviceFlow.AfterLoginRequest else DeviceFlow.AfterVerify)
+            channel.sendsCodeOnStart -> requestCode()
             // The email step just asked the backend to send the code.
-            startCountdown()
+            channel.hasCodeStep -> startCountdown()
         }
     }
 
@@ -101,7 +128,7 @@ class OtpController(
             if (current.isVerifying || current.step != OtpStep.Code) {
                 current
             } else {
-                current.copy(code = value.filter { it in '0'..'9' }.take(AuthFlowConfig.CODE_LENGTH), error = null)
+                current.copy(code = value.filter { it in '0'..'9' }.take(AuthFlowConfig.CODE_LENGTH), error = null, info = null)
             }
         }
     }
@@ -109,10 +136,10 @@ class OtpController(
     fun onVerify() {
         val current = mutableState.value
         if (current.step != OtpStep.Code || !current.canVerify) return
-        mutableState.update { it.copy(isVerifying = true, error = null) }
+        mutableState.update { it.copy(isVerifying = true, error = null, info = null) }
         scope.launch {
             try {
-                handleVerification(repository.verifyEmailOtp(email, current.code), fromCodeStep = true)
+                handleVerification(channel.verify(current.code), fromCodeStep = true)
             } finally {
                 mutableState.update { it.copy(isVerifying = false) }
             }
@@ -121,20 +148,15 @@ class OtpController(
 
     fun onResend() {
         if (mutableState.value.step != OtpStep.Code || !mutableState.value.canResend) return
-        mutableState.update { it.copy(isResending = true, error = null) }
+        requestCode()
+    }
+
+    /** Resend, and phone sign-in's first SMS. */
+    private fun requestCode() {
+        mutableState.update { it.copy(isResending = true, error = null, info = null) }
         scope.launch {
             try {
-                when (val result = repository.requestEmailLogin(email)) {
-                    is EmailLoginResult.CodeSent -> {
-                        // A new code replaces the old one, so the boxes start empty again. The restarted
-                        // countdown is the feedback; there is no message.
-                        mutableState.update { it.copy(code = "", error = null) }
-                        startCountdown()
-                    }
-                    is EmailLoginResult.DeviceLimitReached -> handleDeviceLimit(result.message, result.limit, DeviceFlow.AfterEmailLogin)
-                    is EmailLoginResult.Rejected -> showError(AuthMessage.serverOr(result.message, AuthMessageKey.LOGIN_FAILED))
-                    is EmailLoginResult.Failure -> showError(AuthMessage.from(result.error))
-                }
+                handleCodeRequest(channel.requestCode())
             } finally {
                 mutableState.update { it.copy(isResending = false) }
             }
@@ -147,7 +169,7 @@ class OtpController(
         when {
             // Busy or celebrating: stay put.
             current.isVerifying || current.isSigningOut || current.step == OtpStep.Success -> Unit
-            current.step == OtpStep.Devices && deviceFlow == DeviceFlow.AfterVerify ->
+            current.step == OtpStep.Devices && deviceFlow == DeviceFlow.AfterVerify && channel.hasCodeStep ->
                 mutableState.update { it.copy(step = OtpStep.Code, code = "", error = null, devices = emptyList()) }
             else -> scope.launch { effectChannel.send(OtpEffect.NavigateBack) }
         }
@@ -177,7 +199,7 @@ class OtpController(
         scope.launch {
             var continueNow = false
             try {
-                when (val result = repository.signOutDevice(device.signOutKey, all)) {
+                when (val result = channel.signOutDevice(device.signOutKey, all)) {
                     SignOutDeviceResult.Success -> {
                         val remaining = if (all) emptyList() else mutableState.value.devices - device
                         // The row leaving the list is the feedback. Prototype: with no devices left the flow
@@ -201,19 +223,34 @@ class OtpController(
         scope.launch {
             try {
                 when (deviceFlow) {
-                    DeviceFlow.AfterVerify -> handleVerification(repository.continueAfterDeviceSignOut(email), fromCodeStep = false)
-                    DeviceFlow.AfterEmailLogin -> when (val result = repository.requestEmailLogin(email)) {
-                        is EmailLoginResult.CodeSent -> {
-                            mutableState.update { it.copy(step = OtpStep.Code, code = "", error = null, devices = emptyList()) }
-                            startCountdown()
-                        }
-                        is EmailLoginResult.DeviceLimitReached -> handleDeviceLimit(result.message, result.limit, DeviceFlow.AfterEmailLogin)
-                        is EmailLoginResult.Rejected -> showError(AuthMessage.serverOr(result.message, AuthMessageKey.LOGIN_FAILED))
-                        is EmailLoginResult.Failure -> showError(AuthMessage.from(result.error))
-                    }
+                    DeviceFlow.AfterVerify -> handleVerification(channel.completeWithoutCode(), fromCodeStep = false)
+                    DeviceFlow.AfterLoginRequest -> handleCodeRequest(channel.retryLoginRequest())
                 }
             } finally {
                 mutableState.update { it.copy(isSigningOut = false) }
+            }
+        }
+    }
+
+    /** A code request's outcome; a device limit here came from the login request itself. */
+    private suspend fun handleCodeRequest(outcome: CodeRequestOutcome) {
+        when (outcome) {
+            is CodeRequestOutcome.Sent -> {
+                // A new code replaces the old one, so the boxes start empty again.
+                mutableState.update {
+                    it.copy(step = OtpStep.Code, code = "", error = null, info = outcome.info, devices = emptyList())
+                }
+                startCountdown()
+            }
+            is CodeRequestOutcome.DeviceLimitReached -> handleDeviceLimit(outcome.message, outcome.limit, DeviceFlow.AfterLoginRequest)
+            is CodeRequestOutcome.Refused -> showError(outcome.message)
+            CodeRequestOutcome.AutoVerified -> {
+                mutableState.update { it.copy(isVerifying = true) }
+                try {
+                    handleVerification(channel.completeWithoutCode(), fromCodeStep = false)
+                } finally {
+                    mutableState.update { it.copy(isVerifying = false) }
+                }
             }
         }
     }
@@ -244,18 +281,21 @@ class OtpController(
     // endregion
 
     private suspend fun handleVerification(result: OtpVerificationResult, fromCodeStep: Boolean) {
+        channel.registrationFor(result)?.let { registration ->
+            countdownJob?.cancel()
+            mutableState.update { it.copy(code = "", error = null, info = null, resendSecondsLeft = 0) }
+            effectChannel.send(OtpEffect.RegistrationNeeded(registration))
+            return
+        }
         when (result) {
             is OtpVerificationResult.Verified -> {
                 countdownJob?.cancel()
-                effectChannel.send(OtpEffect.SignedIn(result.session, result.isNewUser, result.hasMultipleProfiles))
-                // Registration and profile choice screens do not exist yet: say so on the success step
-                // and use the default profile.
-                val notice = when {
-                    result.isNewUser -> AuthMessage.Localized(AuthMessageKey.PROFILE_SETUP_PENDING)
-                    result.hasMultipleProfiles -> AuthMessage.Localized(AuthMessageKey.MULTI_PROFILE_PENDING)
-                    else -> null
+                // The first profile, without a picker (not built yet).
+                val session = profileChooser.choose(result.session)
+                effectChannel.send(OtpEffect.SignedIn(session, result.isNewUser, result.hasMultipleProfiles))
+                mutableState.update {
+                    it.copy(step = OtpStep.Success, code = "", error = null, info = null, notice = null, resendSecondsLeft = 0)
                 }
-                mutableState.update { it.copy(step = OtpStep.Success, code = "", error = null, notice = notice, resendSecondsLeft = 0) }
                 scope.launch {
                     delay(config.successMillis)
                     effectChannel.send(OtpEffect.Authenticated)
@@ -291,6 +331,7 @@ class OtpController(
         mutableState.update {
             it.copy(
                 error = message,
+                info = null,
                 shakeCount = if (shake) it.shakeCount + 1 else it.shakeCount,
                 code = if (clearCode) "" else it.code,
             )
@@ -299,4 +340,30 @@ class OtpController(
 
     /** Cancels the controller's work. Only for a controller that owns its scope (`SharedGraph.otpController`). */
     fun close() = scope.cancel()
+
+    companion object {
+        /** Phone sign-in after `phone-login` "0": texts the first code (unless [initialDeviceLimit] opens the device step). */
+        fun phone(
+            phone: PhoneNumber,
+            repository: PhoneAuthRepository,
+            accounts: AuthRepository,
+            sender: PhoneOtpSender,
+            initialDeviceLimit: DeviceLimit?,
+            scope: CoroutineScope,
+            config: AuthFlowConfig,
+            profileChooser: SessionProfileChooser = SessionProfileChooser.KeepDefault,
+        ): OtpController =
+            OtpController(PhoneOtpChannel(phone, repository, sender, accounts), initialDeviceLimit, scope, config, profileChooser)
+
+        /** Google / Apple sign-in at its device limit: the device step, then the same credential again. */
+        fun socialDevices(
+            credential: SocialCredential,
+            repository: SocialAuthRepository,
+            accounts: AuthRepository,
+            limit: DeviceLimit,
+            scope: CoroutineScope,
+            config: AuthFlowConfig,
+            profileChooser: SessionProfileChooser = SessionProfileChooser.KeepDefault,
+        ): OtpController = OtpController(SocialOtpChannel(credential, repository, accounts), limit, scope, config, profileChooser)
+    }
 }

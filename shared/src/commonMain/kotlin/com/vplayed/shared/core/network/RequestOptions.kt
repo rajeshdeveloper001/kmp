@@ -17,12 +17,29 @@ data class RequestOptions(
      * (decision D21). False on the auth endpoints, which answer for the credentials in their body.
      */
     val endsSessionOnUnauthorized: Boolean = true,
+    /** False for the token refresh, which (as the UIKit app's `refreshTokenHeader`) carries no `Authorization`. */
+    val sendAuthorization: Boolean = true,
+    /**
+     * Credentials for a session that is not stored yet (sign-up in progress, the profile choice after
+     * sign-in): sent instead of the stored session's. Masked by [AuthTokens.toString].
+     */
+    val sessionOverride: AuthTokens? = null,
 ) {
     companion object {
         val Default = RequestOptions()
 
         /** Auth endpoints: bodies hold codes, tokens and emails, and a 401 is about those, not the session. */
         val Sensitive = RequestOptions(redact = true, endsSessionOnUnauthorized = false)
+
+        /** `auth/refresh-token`: the refresh token is in the body; the rejected access token is not sent. */
+        val TokenRefresh = RequestOptions(redact = true, endsSessionOnUnauthorized = false, sendAuthorization = false)
+
+        /**
+         * A request made with [tokens] of a session that is not stored yet. A 401 is about those
+         * tokens, so it never ends (or refreshes) the stored session.
+         */
+        fun pendingSession(tokens: AuthTokens?): RequestOptions =
+            RequestOptions(redact = true, endsSessionOnUnauthorized = false, sessionOverride = tokens)
     }
 }
 

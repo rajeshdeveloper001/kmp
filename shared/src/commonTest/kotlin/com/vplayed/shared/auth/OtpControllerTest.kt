@@ -186,7 +186,7 @@ class OtpControllerTest {
     }
 
     @Test
-    fun givenNewUser_whenVerified_thenSuccessStepTellsWhatIsComingAndStillContinues() = runTest {
+    fun givenNewUser_whenVerified_thenSuccessStepHasNoNoticeAndStillContinues() = runTest {
         repository.verifyResult = verified(isNewUser = true, hasMultipleProfiles = true)
         val controller = started()
         controller.typeFullCode()
@@ -194,20 +194,22 @@ class OtpControllerTest {
         controller.onVerify()
         runCurrent()
 
-        assertEquals(AuthMessage.Localized(AuthMessageKey.PROFILE_SETUP_PENDING), controller.state.value.notice)
+        // Sign-up and the first-profile choice exist now: no "coming soon" notice.
+        assertNull(controller.state.value.notice)
         advanceTimeBy(AuthFlowConfig.SUCCESS_MILLIS + 1)
         runCurrent()
         assertEquals(OtpEffect.Authenticated, controller.nextEffect())
     }
 
     @Test
-    fun givenSeveralProfiles_whenVerified_thenSuccessStepMentionsProfileChoice() = runTest {
+    fun givenSeveralProfiles_whenVerified_thenSuccessStepHasNoNotice() = runTest {
         repository.verifyResult = verified(hasMultipleProfiles = true)
         val controller = started()
         controller.typeFullCode()
         controller.onVerify()
         runCurrent()
-        assertEquals(AuthMessage.Localized(AuthMessageKey.MULTI_PROFILE_PENDING), controller.state.value.notice)
+        // The first profile is used without a picker, so nothing is announced.
+        assertNull(controller.state.value.notice)
     }
 
     @Test
