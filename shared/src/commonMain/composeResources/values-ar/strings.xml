@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from VPlayed Localizable.xcstrings (reference) and AndroidJP strings.xml.
+     The one string catalog for AndroidJP and VPlayed. Placeholders are %1$s, %2$s… only:
+     apps pass numbers already formatted for the locale. A literal percent sign is a single %.
+     Values are not Android resources: write apostrophes plainly, never \'. -->
+<resources>
+
+    <!-- Common -->
+    <string name="common_back">رجوع</string>
+    <string name="common_cancel">إلغاء</string>
+    <string name="common_change">تغيير</string>
+    <string name="common_close">إغلاق</string>
+    <string name="common_continue">متابعة</string>
+    <string name="common_try_again">أعد المحاولة</string>
+    <string name="common_refresh">تحديث</string>
+    <string name="common_details">التفاصيل</string>
+    <string name="common_coming_soon">قريبًا</string>
+    <string name="common_coming_soon_caps">قريبًا</string>
+    <string name="common_view_all">عرض الكل</string>
+    <string name="common_title">عنوان</string>
+    <string name="common_sign_in">تسجيل الدخول</string>
+    <string name="common_sign_out">تسجيل الخروج</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_promos">العروض</string>
+    <string name="nav_subscription">الاشتراك</string>
+    <string name="nav_search">بحث</string>
+    <string name="nav_movies">الأفلام</string>
+    <string name="nav_language">اللغة</string>
+    <string name="nav_channel">قناة</string>
+    <string name="nav_bulk_purchase">شراء بالجملة</string>
+    <string name="nav_voice_search">البحث الصوتي</string>
+    <string name="nav_notifications">الإشعارات</string>
+    <string name="placeholder_detail">تفاصيل: %1$s</string>
+    <string name="placeholder_screen_not_built">هذه الشاشة غير جاهزة بعد.</string>
+    <string name="placeholder_not_available">هذه الميزة غير متاحة في هذا الإصدار بعد.</string>
+
+    <!-- Content kinds -->
+    <string name="content_kind_video">فيديو</string>
+    <string name="content_kind_series">مسلسل</string>
+    <string name="content_kind_micro_series">مسلسل قصير</string>
+    <string name="content_kind_promo">ترويجي</string>
+    <string name="content_kind_audio">صوت</string>
+    <string name="content_kind_live">مباشر</string>
+
+    <!-- Splash -->
+    <string name="splash_tagline">عِش التجربة</string>
+    <string name="splash_skip_intro">تخطَّ المقدمة</string>
+
+    <!-- Menu and language -->
+    <string name="menu_open">القائمة</string>
+    <string name="menu_close">إغلاق القائمة</string>
+    <string name="menu_signed_in_as">مسجّل الدخول باسم %1$s</string>
+    <string name="menu_sign_out_confirm">هل تريد تسجيل الخروج من %1$s؟</string>
+    <string name="language_footer">تتغيّر أيضًا العناوين والأوصاف من %1$s عندما تكون متاحة بتلك اللغة.</string>
+
+    <!-- Home -->
+    <string name="home_featured">مميّز</string>
+    <string name="home_watch_now">شاهد الآن</string>
+    <string name="home_add_to_watchlist">أضف %1$s إلى قائمة المشاهدة</string>
+    <string name="home_slide_position">الشريحة %1$s من %2$s</string>
+    <string name="home_badge_live">مباشر</string>
+    <string name="home_badge_upcoming">قادم</string>
+    <string name="home_watch_live">شاهد مباشرة</string>
+    <string name="home_set_reminder">ضبط تذكير</string>
+    <string name="home_follow">متابعة</string>
+    <string name="home_following">تتم المتابعة</string>
+    <string name="home_unfollow">إلغاء المتابعة</string>
+    <string name="home_unfollow_confirm">هل تريد إلغاء متابعة %1$s؟</string>
+    <string name="home_followed_toast">لقد بدأت متابعة هذه القناة</string>
+    <string name="home_unfollowed_toast">لقد ألغيت متابعة هذه القناة</string>
+    <string name="home_explore_bundles">استكشف الباقات</string>
+    <string name="home_save_up_to">وفّر حتى %1$s%</string>
+    <string name="home_price">السعر %1$s</string>
+    <string name="home_rank_label">رقم %1$s، %2$s</string>
+    <string name="home_shows_all_titles_in">يعرض كل العناوين في %1$s</string>
+    <string name="home_loading">جارٍ تحميل الصفحة الرئيسية</string>
+    <string name="home_loading_more">جارٍ تحميل المزيد</string>
+    <string name="home_load_failed">تعذّر تحميل الصفحة الرئيسية</string>
+    <string name="home_load_more_failed">تعذّر تحميل المزيد. اضغط لإعادة المحاولة.</string>
+    <string name="home_empty_title">صفحتك الرئيسية فارغة</string>
+    <string name="home_empty_message">لا يوجد ما يُعرض بعد. عُد قريبًا.</string>
+    <string name="home_sign_in_watchlist">سجّل الدخول للإضافة إلى قائمة المشاهدة</string>
+    <string name="home_sign_in_follow">سجّل الدخول لمتابعة القنوات</string>
+    <string name="home_sign_in_reminder">سجّل الدخول لضبط تذكير</string>
+
+    <!-- Movies -->
+    <string name="movies_load_failed">تعذّر تحميل الأفلام</string>
+    <string name="movies_empty">لا توجد أفلام بعد</string>
+    <string name="movies_loading">جارٍ تحميل الأفلام</string>
+
+    <!-- Sign in -->
+    <string name="login_step">الخطوة %1$s من 3</string>
+    <string name="login_title">سجّل الدخول أو أنشئ حسابك</string>
+    <string name="login_google">التسجيل باستخدام Google</string>
+    <string name="login_apple">التسجيل باستخدام Apple</string>
+    <string name="login_divider_email">أو تابع باستخدام البريد الإلكتروني</string>
+    <!-- needs_review -->
+    <string name="login_divider_phone">أو تابع برقم الجوال</string>
+    <string name="login_email_label">البريد الإلكتروني</string>
+    <string name="login_email_help">سنرسل رمزًا مكوّنًا من 6 أرقام للتحقق من هويتك.</string>
+    <!-- needs_review -->
+    <string name="login_phone_label">رقم الجوال</string>
+    <!-- needs_review -->
+    <string name="login_phone_country">رمز الدولة</string>
+    <!-- needs_review -->
+    <string name="login_phone_help">سنرسل رسالة نصية برمز مكوّن من 6 أرقام للتحقق من هويتك.</string>
+    <string name="login_continue_as_guest">المتابعة كضيف</string>
+    <string name="login_terms">عمري أكثر من 18 عامًا، وبالمتابعة أوافق على [شروط الاستخدام](terms) و[سياسة الخصوصية](privacy).</string>
+    <!-- needs_review -->
+    <string name="session_expired">انتهت الجلسة، يُرجى تسجيل الدخول للمتابعة</string>
+
+    <!-- Verification code -->
+    <string name="otp_title">تحقّق من هويتك</string>
+    <string name="otp_note">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى %1$s</string>
+    <string name="otp_code_description">رمز التحقق</string>
+    <string name="otp_resend_prompt">لم يصلك الرمز؟</string>
+    <string name="otp_resend">إعادة الإرسال</string>
+    <string name="otp_resend_in">إعادة الإرسال بعد %1$s</string>
+    <string name="otp_verify">تحقّق وتابع</string>
+    <!-- needs_review -->
+    <string name="otp_devices_title">تم الوصول إلى الحد الأقصى من الأجهزة</string>
+    <!-- needs_review -->
+    <string name="otp_devices_note">حسابك مسجَّل الدخول على الحد الأقصى المسموح به من الأجهزة. سجّل الخروج من أحدها للمتابعة.</string>
+    <!-- needs_review -->
+    <string name="otp_device_this_device">هذا الجهاز</string>
+    <!-- needs_review -->
+    <string name="otp_devices_sign_out_all">تسجيل الخروج من جميع الأجهزة</string>
+    <string name="otp_success_title">كل شيء جاهز</string>
+    <string name="otp_success_note">حسابك على %1$s جاهز.</string>
+    <string name="otp_success_progress">جارٍ الدخول…</string>
+
+    <!-- Registration -->
+    <!-- needs_review -->
+    <string name="register_title">أخبرنا عنك</string>
+    <!-- needs_review -->
+    <string name="register_note">أكمل ملفك الشخصي لإنهاء إنشاء حسابك على %1$s.</string>
+    <!-- needs_review -->
+    <string name="register_name_label">الاسم الكامل</string>
+    <!-- needs_review -->
+    <string name="register_name_placeholder">أدخل اسمك</string>
+    <!-- needs_review -->
+    <string name="register_referral_toggle">هل لديك رمز إحالة؟</string>
+    <!-- needs_review -->
+    <string name="register_referral_label">رمز الإحالة</string>
+    <!-- needs_review -->
+    <string name="register_referral_placeholder">أدخل رمز الإحالة</string>
+    <!-- needs_review -->
+    <string name="register_submit">إنهاء الإعداد</string>
+    <!-- needs_review -->
+    <string name="register_success_title">كل شيء جاهز يا %1$s</string>
+
+    <!-- Validation -->
+    <string name="validation_email_invalid">يُرجى إدخال بريد إلكتروني صالح</string>
+    <!-- needs_review -->
+    <string name="validation_email_required">البريد الإلكتروني مطلوب</string>
+    <!-- needs_review -->
+    <string name="validation_phone_india">أدخل رقم جوال صالحًا مكوّنًا من 10 أرقام</string>
+    <!-- needs_review -->
+    <string name="validation_phone_invalid">رقم الجوال غير صالح</string>
+    <!-- needs_review -->
+    <string name="validation_phone_required">رقم الجوال مطلوب</string>
+    <!-- needs_review -->
+    <string name="validation_name_required">أدخل اسمك.</string>
+    <!-- needs_review -->
+    <string name="validation_name_too_short">يجب أن يتكون الاسم من حرفين على الأقل.</string>
+
+    <!-- Sign-in messages (AuthMessageKey). %1$s, where present, is the brand name. -->
+    <string name="auth_device_limit">لقد سجّلت الدخول على الحد الأقصى من الأجهزة. سجّل الخروج من جهاز آخر، ثم حاول مرة أخرى.</string>
+    <!-- needs_review -->
+    <string name="auth_login_failed">تعذّر تسجيل دخولك. يُرجى المحاولة مرة أخرى.</string>
+    <!-- needs_review -->
+    <string name="auth_otp_invalid">الرمز غير صحيح. حاول مرة أخرى.</string>
+    <string name="auth_registration_required">هذا البريد الإلكتروني غير مسجّل بعد. أنشئ حسابك على موقع %1$s، ثم سجّل الدخول.</string>
+    <!-- needs_review -->
+    <string name="auth_registration_failed">تعذّر إكمال تسجيلك. يُرجى المحاولة مرة أخرى.</string>
+    <!-- needs_review -->
+    <string name="auth_registration_cancelled">لم يكتمل تسجيلك.</string>
+    <!-- needs_review -->
+    <string name="auth_device_sign_out_failed">تعذّر تسجيل الخروج من هذا الجهاز. يُرجى المحاولة مرة أخرى.</string>
+    <!-- needs_review -->
+    <string name="auth_profile_setup_pending">مرحبًا! سيتوفر إعداد ملفك الشخصي قريبًا.</string>
+    <!-- needs_review -->
+    <string name="auth_multi_profile_pending">سيتوفر اختيار الملف الشخصي قريبًا؛ يُستخدم ملفك الشخصي الافتراضي.</string>
+    <!-- needs_review -->
+    <string name="auth_phone_code_sent">تم إرسال رمز التحقق إلى رقم الجوال المسجّل</string>
+    <!-- needs_review -->
+    <string name="auth_phone_code_send_failed">تعذّر إرسال الرمز. يُرجى المحاولة مرة أخرى.</string>
+    <!-- needs_review -->
+    <string name="auth_phone_login_unavailable">تسجيل الدخول برقم الجوال غير متاح حاليًا.</string>
+    <!-- needs_review -->
+    <string name="auth_social_login_failed">فشل تسجيل الدخول. يُرجى المحاولة مرة أخرى.</string>
+    <!-- needs_review -->
+    <string name="auth_apple_email_required">يُرجى تفعيل خيار مشاركة البريد الإلكتروني لاستخدام تسجيل الدخول عبر Apple.</string>
+
+    <!-- Errors (AppError). %1$s, where present, is the brand name. -->
+    <string name="error_offline">يبدو أنك غير متصل بالإنترنت. تحقّق من اتصالك وحاول مرة أخرى.</string>
+    <string name="error_timeout">استغرق الخادم وقتًا طويلًا للرد. يُرجى المحاولة مرة أخرى.</string>
+    <string name="error_unreachable">تعذّر الاتصال بـ %1$s. يُرجى المحاولة مرة أخرى.</string>
+    <string name="error_session_expired">انتهت جلستك. يُرجى تسجيل الدخول مرة أخرى.</string>
+    <string name="error_generic">حدث خطأ أثناء التحميل. يُرجى المحاولة مرة أخرى.</string>
+
+    <!-- Appearance and design-system reference (Android screens) -->
+
+    <!-- Plurals -->
+    <plurals name="home_followers">
+        <item quantity="zero">%1$s متابع</item>
+        <item quantity="one">%1$s متابع</item>
+        <item quantity="two">%1$s متابعان</item>
+        <item quantity="few">%1$s متابعين</item>
+        <item quantity="many">%1$s متابعًا</item>
+        <item quantity="other">%1$s متابع</item>
+    </plurals>
+    <plurals name="movies_count">
+        <item quantity="zero">**%1$s** فيلم · مختارة من حول العالم</item>
+        <item quantity="one">**%1$s** فيلم · مختارة من حول العالم</item>
+        <item quantity="two">**%1$s** فيلمان · مختارة من حول العالم</item>
+        <item quantity="few">**%1$s** أفلام · مختارة من حول العالم</item>
+        <item quantity="many">**%1$s** فيلمًا · مختارة من حول العالم</item>
+        <item quantity="other">**%1$s** فيلم · مختارة من حول العالم</item>
+    </plurals>
+</resources>

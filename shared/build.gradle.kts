@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
     `maven-publish`
 }
 
@@ -22,14 +24,14 @@ publishing {
 }
 
 kotlin {
-    // One XCFramework for the VPlayed target: iOS device and iOS simulator (with the Intel slice for
-    // universal simulator builds). VPlayed runs on Apple-silicon Macs and Apple Vision Pro as the iPad
+    // One XCFramework for the VPlayed target: iOS device and the Apple-silicon iOS simulator. There is
+    // no iosX64 slice: Compose Multiplatform Resources (the shared string catalog) does not publish
+    // one. VPlayed runs on Apple-silicon Macs and Apple Vision Pro as the iPad
     // app ("Designed for iPad"), which uses the iosArm64 slice, so there are no macOS or visionOS targets.
     val xcFramework = XCFramework("Shared")
     listOf(
         iosArm64(),
         iosSimulatorArm64(),
-        iosX64(),
     ).forEach { appleTarget ->
         appleTarget.binaries.framework {
             baseName = "Shared"
@@ -48,6 +50,12 @@ kotlin {
             jvmTarget = JvmTarget.JVM_11
         }
         withHostTest {}
+
+        // The shared string catalog (composeResources) ships in the AAR; the KMP library plugin
+        // turns Android resources off unless asked.
+        androidResources {
+            enable = true
+        }
     }
 
     sourceSets {
@@ -55,6 +63,11 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             api(libs.kotlinx.serialization.json)
             api(libs.ktor.client.core)
+            // Shared string catalog (src/commonMain/composeResources). `api` so the apps get the
+            // generated `Res` accessors and the lookup functions.
+            api(libs.compose.components.resources)
+            // Required by the Compose compiler plugin, which the resources plugin needs; no UI is written here.
+            implementation(libs.compose.runtime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -68,6 +81,13 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
     }
+}
+
+// The one string catalog both apps read: `Res.string.*` / `Res.plurals.*` in com.vplayed.shared.l10n.
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.vplayed.shared.l10n"
+    generateResClass = always
 }
 
 tasks.register("runApiContractTests") {

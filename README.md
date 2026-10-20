@@ -2,8 +2,8 @@
 
 Kotlin Multiplatform library (`:shared`) holding the business logic both VPlayed apps use:
 networking, request encryption, models, validation, sign-in, Home, geo restriction, launch
-settings and the session. **No UI
-lives here.** Screens stay native: Jetpack Compose in `AndroidJP`, SwiftUI in `VPlayed`.
+settings, the session, the language list and the **one string catalog both apps show** (`l10n/`).
+**No UI lives here.** Screens stay native: Jetpack Compose in `AndroidJP`, SwiftUI in `VPlayed`.
 
 The plan and its decisions are in `../KMP_PLANNING/` (architecture, API mapping, storage, migration
 plan, backlog). Done so far: Phase 2 (foundation), Phase 3 (sign-in, `auth/`), Phase 4 (Home,
@@ -15,11 +15,12 @@ used by both apps.
 | Target | Consumer | Artifact |
 |---|---|---|
 | Android (`com.android.kotlin.multiplatform.library`, compile 37 / min 24, JVM 11) | AndroidJP | `com.vplayed:shared:<version>` |
-| `iosArm64`, `iosSimulatorArm64`, `iosX64` | VPlayed (iPhone, iPad) | `Shared.xcframework` (static, module `Shared`) |
+| `iosArm64`, `iosSimulatorArm64` | VPlayed (iPhone, iPad) | `Shared.xcframework` (static, module `Shared`) |
 
 VPlayed is an iOS-only target. It runs on Apple-silicon Macs and Apple Vision Pro as the iPad app
 ("Designed for iPad"), which uses the `iosArm64` slice, so there are no macOS or visionOS targets.
-`iosX64` is for universal simulator builds; its tests can't run on Apple-silicon hosts.
+There is no `iosX64` (Intel simulator) slice: Compose Multiplatform Resources, which serves the
+string catalog, does not publish one.
 
 ## Toolchain
 
@@ -70,12 +71,18 @@ commonMain/kotlin/com/vplayed/shared/
                             serialized, outcomes for retry decisions; D18: the apps decide when), GeoTokenDecoder
   settings/                 CommonSettings + CommonSettingsRepository (`mediaview/api/v1/common`, update
                             details of this app's platform only)
+  language/                 Language, SupportedLanguagesStore (fallback en/ar/pt/ta until loaded; resolve()),
+                            LanguageRepository (`mediaview/api/v1/language`)
+  l10n/                     SharedLocalization (app language, key lookups), MessageResources (catalog string for
+                            AuthMessageKey, AppError, validation results, ShowType); generated `Res` accessors
   validation/               EmailValidator, PhoneValidator, NameValidator
   session/                  SessionManager (restore, sign-in/out, 401 → expired), SessionCodec (reads both apps'
                             old formats), SecureStore / BlockingSecureStore / DispatchingSecureStore / InMemorySecureStore
 androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
 appleMain/                  Darwin engine, CommonCrypto, NSLog, FlowWatcher / StateFlowWatcher (Swift bridge),
-                            controller watchState / watchEffects / currentState for Swift (auth, Home)
+                            controller watchState / watchEffects / currentState for Swift (auth, Home),
+                            SharedStrings (synchronous catalog lookups for SwiftUI), watchLanguages
+commonMain/composeResources/ values/strings.xml (English, every key) and values-ar|pt|ta/strings.xml
 commonTest/, appleTest/     tests (Ktor MockEngine, kotlinx-coroutines-test); EndpointContractTest runs every
                             endpoint through the same failure scenarios, the D21 rule and a no-secrets log check
 androidHostTest/            OkHttpEngineTest: the OkHttp engine against a real local HTTP server
@@ -103,8 +110,22 @@ androidHostTest/            OkHttpEngineTest: the OkHttp engine against a real l
   `SharedGraph.logout()`) ends it after the server agrees; both apps' sign-out entries use it.
 - **No secrets or personal data in logs or `toString()`.** Use `RequestOptions.Sensitive` for auth calls.
   `AuthTokens`, `SharedConfig` and `VPlayedResponse` mask their contents.
-- **User-facing text stays native.** Shared code returns typed results or message keys. Android maps
-  them to `strings.xml`, iOS to `Localizable.xcstrings`.
+- **User-facing text lives in the shared catalog.** `commonMain/composeResources/values*/strings.xml`
+  (Compose Multiplatform Resources) is the only source of translatable text for both apps; iOS
+  wording is the reference. Shared logic still returns typed results or message keys
+  (`AuthMessageKey`, validation results, `AppError`); `l10n/MessageResources` names the catalog string
+  for each. Placeholders are `%1$s`, `%2$s`… only (apps pass numbers already formatted for the locale,
+  and a literal percent sign is a single `%`). Write apostrophes plainly: values are not Android
+  resources, so `\'` would show its backslash. Markers: `<!-- needs_review -->` (translation to check),
+  `<!-- needs translation: ar, pt, ta -->` (English only so far).
+- **Languages.** The list the user picks from comes from `mediaview/api/v1/language`
+  (`SharedGraph.languageRepository`, kept in `supportedLanguagesStore`). A language without a
+  `values-xx/strings.xml` (today te and hi), or a key missing from one, shows the English text; its
+  server content still follows `X-Language-Code`. To translate a language, add
+  `values-xx/strings.xml` with the same keys; no code changes. After adding or renaming keys, run
+  `scripts/generate-swift-l10n-keys.py` so VPlayed's `L10nKey` matches. Each app keeps its own saved
+  choice and makes it the platform's app language (AndroidJP per-app locale, VPlayed `AppleLanguages`),
+  which catalog lookups follow, then reports it with `SharedLocalization.setLanguage`.
 - **Only synthetic test fixtures.** Real API responses contain personal data.
 - **Coverage.** Kover is applied only through `scripts/coverage.init.gradle.kts`, so normal builds
   (and AndroidJP's composite build) never load it. Proposed gate: 90 % lines on the JVM run (96.6 %
@@ -118,8 +139,11 @@ AndroidJP :app ──(composite build: includeBuild("../kmp"))──► kmp :sha
    SessionManager, GeoStore                                                                         Vision Pro as the iPad app)
 ```
 
-`:shared` depends only on kotlinx-coroutines, kotlinx-serialization and Ktor (OkHttp engine on
-Android, Darwin on Apple). It never depends on an app. Each app supplies its platform pieces (device
+`:shared` depends only on kotlinx-coroutines, kotlinx-serialization, Ktor (OkHttp engine on
+Android, Darwin on Apple) and Compose Multiplatform Resources 1.12.1 (string catalog; it brings the
+Compose runtime, no UI code is written here). The XCFramework carries the catalog in each slice's
+`Shared.framework/composeResources`; `scripts/build-shared.sh` copies it into VPlayed's bundle
+(`compose-resources/`), because a static framework's own files are not embedded. It never depends on an app. Each app supplies its platform pieces (device
 facts, secure storage, the HTTP engine factory) and owns when things run (geo refresh triggers,
 storing a session after its flow, sign-out). Changes here reach AndroidJP on its next build and
 VPlayed after `scripts/build-shared.sh`; keep both apps' tests green before merging.

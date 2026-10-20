@@ -37,6 +37,9 @@ import com.vplayed.shared.home.HomeImagePolicy
 import com.vplayed.shared.home.HomeMapper
 import com.vplayed.shared.home.HomeRepository
 import com.vplayed.shared.movies.DefaultMoviesRepository
+import com.vplayed.shared.language.DefaultLanguageRepository
+import com.vplayed.shared.language.LanguageRepository
+import com.vplayed.shared.language.SupportedLanguagesStore
 import com.vplayed.shared.movies.MoviesRepository
 import com.vplayed.shared.phone.CountryDialCodes
 import com.vplayed.shared.phone.PhoneNumber
@@ -198,6 +201,14 @@ class SharedGraph(
     /** Launch-time app settings (`mediaview/api/v1/common`), kept in [commonSettingsStore]. */
     val commonSettingsRepository: CommonSettingsRepository by lazy {
         DefaultCommonSettingsRepository(apiCaller, config.platform, commonSettingsStore)
+    }
+
+    /** The languages the user can pick: the bundled fallback until [languageRepository] loads the list. */
+    val supportedLanguagesStore: SupportedLanguagesStore = SupportedLanguagesStore()
+
+    /** The language list (`mediaview/api/v1/language`), kept in [supportedLanguagesStore]. Each app loads it at launch. */
+    val languageRepository: LanguageRepository by lazy {
+        DefaultLanguageRepository(apiCaller, supportedLanguagesStore)
     }
 
     /** The automatic guest session; each app calls `start()` once at launch. */
