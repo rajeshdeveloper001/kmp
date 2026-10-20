@@ -98,6 +98,16 @@ class SocialLoginController(
     /** Cancels the controller's work. Only for a controller that owns its scope. */
     fun close() = scope.cancel()
 
+    /** The step is closed: reset social sign-in state unless a request is in flight. */
+    fun onClosed() {
+        if (mutableState.value.inFlight == null) clear()
+    }
+
+    /** Resets in-flight and succeeded state so another social sign-in can start. */
+    fun clear() {
+        mutableState.value = SocialLoginState()
+    }
+
     private suspend fun handle(result: OtpVerificationResult, credential: SocialCredential) {
         when (result) {
             is OtpVerificationResult.Verified -> {
@@ -109,6 +119,7 @@ class SocialLoginController(
                 scope.launch {
                     delay(config.successMillis)
                     effectChannel.send(SocialLoginEffect.Authenticated)
+                    mutableState.update { it.copy(succeeded = false) }
                 }
             }
             is OtpVerificationResult.DeviceLimitReached -> effectChannel.send(
