@@ -35,7 +35,9 @@ private const val DEFAULT_LANGUAGE = "en"
  *
  * - always: `Accept`, `X-Request-Type: mobile`, `device_type`, `app_version`, `X-Language-Code`;
  * - `device_id` when the platform provides one;
- * - with a session: `Authorization: Bearer …` and `profile_id` (when known); nothing when signed out;
+ * - with a session: `Authorization: Bearer …` (unless [RequestOptions.sendAuthorization] is false) and
+ *   `profile_id` (when known); nothing when signed out. [RequestOptions.sessionOverride] replaces the
+ *   stored session's credentials for one request;
  * - `x-bearer-token` whenever a geo token is known, except on requests with
  *   [RequestOptions.sendGeoToken] = false. Never sent empty.
  *
@@ -56,8 +58,8 @@ val VPlayedHeaders = createClientPlugin("VPlayedHeaders", ::VPlayedHeadersConfig
             set(VPlayedHeaderNames.APP_VERSION, appVersion)
             set(VPlayedHeaderNames.LANGUAGE, deviceInfo.languageCode().trim().ifEmpty { DEFAULT_LANGUAGE })
             deviceInfo.deviceId?.takeIf { it.isNotBlank() }?.let { set(VPlayedHeaderNames.DEVICE_ID, it) }
-            credentials.authTokens?.let { tokens ->
-                set(HttpHeaders.Authorization, "Bearer ${tokens.accessToken}")
+            (options.sessionOverride ?: credentials.authTokens)?.let { tokens ->
+                if (options.sendAuthorization) set(HttpHeaders.Authorization, "Bearer ${tokens.accessToken}")
                 tokens.profileId?.takeIf { it.isNotBlank() }?.let { set(VPlayedHeaderNames.PROFILE_ID, it) }
             }
             val geoToken = credentials.geoToken

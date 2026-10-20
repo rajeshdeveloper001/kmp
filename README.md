@@ -56,7 +56,11 @@ commonMain/kotlin/com/vplayed/shared/
   auth/                     AuthRepository + DefaultAuthRepository (email-login, verifyEmailOtp, logout-device,
                             verifyEmailLogin, generate, logout; status rules D1–D5 in its KDoc), result types,
                             EmailLoginController / OtpController (the sign-in flow: state, intents, effects),
+                            phone-login, auth/login (Google / Apple), sign-up of new accounts
+                            (RegistrationRepository: auth/register, auth/update-profile; RegistrationController),
                             AuthFlowConfig, AuthMessage / AuthMessageKey (text stays in the apps)
+  profile/                  ProfileRepository (`users/api/v1/muti-profile/list`), SessionProfileChooser:
+                            each sign-in uses the account's first profile without a PIN lock (no picker yet)
   home/                     HomeRepository + DefaultHomeRepository (homebanners, home, home/all/{id},
                             follow_studio; read rule D6), HomeMapper (lenient JSON → models; per-app image
                             table HomeImagePolicy D12, price D13, AccessTag D14, live keys D10, bundle colour
@@ -66,7 +70,7 @@ commonMain/kotlin/com/vplayed/shared/
                             serialized, outcomes for retry decisions; D18: the apps decide when), GeoTokenDecoder
   settings/                 CommonSettings + CommonSettingsRepository (`mediaview/api/v1/common`, update
                             details of this app's platform only)
-  validation/               EmailValidator
+  validation/               EmailValidator, PhoneValidator, NameValidator
   session/                  SessionManager (restore, sign-in/out, 401 → expired), SessionCodec (reads both apps'
                             old formats), SecureStore / BlockingSecureStore / DispatchingSecureStore / InMemorySecureStore
 androidMain/                OkHttp engine (+ createOkHttpEngine(OkHttpClient)), javax.crypto, Logcat
@@ -90,8 +94,12 @@ androidHostTest/            OkHttpEngineTest: the OkHttp engine against a real l
   it to `SharedGraph`, like the `GeoStore`. Repositories return sessions; the app calls
   `SessionManager.signIn` when its flow is done. Every backend request waits for the stored session
   to be read, then sends its tokens and the `GeoStore` geo token. A 401 (HTTP or envelope) on a
-  request that carried the token ends the session (decision D21), except on auth endpoints
-  (`RequestOptions.endsSessionOnUnauthorized`). `SessionManager.logout(authRepository)` (or
+  request that carried the token first tries one token refresh (`auth/refresh-token`, one at a
+  time) and resends the request once; a refused refresh or a second 401 ends the session
+  (decision D21, revised), except on auth endpoints (`RequestOptions.endsSessionOnUnauthorized`).
+  `GuestSessionKeeper` keeps a guest session whenever nobody is signed in and the common settings
+  allow guests. A new account's session (`PendingRegistration`) is stored only after sign-up
+  succeeds; until then its calls send that session's token through `RequestOptions.pendingSession`. `SessionManager.logout(authRepository)` (or
   `SharedGraph.logout()`) ends it after the server agrees; both apps' sign-out entries use it.
 - **No secrets or personal data in logs or `toString()`.** Use `RequestOptions.Sensitive` for auth calls.
   `AuthTokens`, `SharedConfig` and `VPlayedResponse` mask their contents.

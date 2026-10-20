@@ -95,7 +95,7 @@ data class CommonSettings(
     }
 }
 
-/** The launch-time settings call. */
+/** The launch-time settings call. Every successful load is kept in the graph's [CommonSettingsStore]. */
 interface CommonSettingsRepository {
     suspend fun load(): DataResult<CommonSettings>
 }
@@ -103,10 +103,13 @@ interface CommonSettingsRepository {
 internal class DefaultCommonSettingsRepository(
     private val api: ApiCaller,
     private val platform: ClientPlatform,
+    /** Receives every successfully loaded value. */
+    private val store: CommonSettingsStore = CommonSettingsStore(),
 ) : CommonSettingsRepository {
 
     override suspend fun load(): DataResult<CommonSettings> =
         api.get(PATH).flatMap { it.requireResponse() }.map { CommonSettings.from(it, platform) }
+            .also { result -> if (result is DataResult.Success) store.update(result.data) }
 
     private companion object {
         const val PATH = "mediaview/api/v1/common"

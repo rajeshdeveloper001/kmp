@@ -52,8 +52,14 @@ enum class AuthMessageKey {
     /** A wrong or expired code. */
     OTP_INVALID,
 
-    /** The account must be registered first (no registration screen yet). */
+    /** The account must be registered first, where the flow has no sign-up form (email 203 without a session, Google / Apple). */
     REGISTRATION_REQUIRED,
+
+    /** Sign-up was refused without a usable explanation. */
+    REGISTRATION_FAILED,
+
+    /** The sign-up form was left before it was sent (UIKit "Your signup was unsuccessful."). */
+    REGISTRATION_CANCELLED,
 
     /** Signing a device out failed. */
     DEVICE_SIGN_OUT_FAILED,
@@ -63,6 +69,24 @@ enum class AuthMessageKey {
 
     /** Success step, several profiles: profile choice is not built yet; the default profile is used. */
     MULTI_PROFILE_PENDING,
+
+    /** A login code was texted to the phone number (UIKit "OTP has been sent to registered mobile number"). */
+    PHONE_CODE_SENT,
+
+    /** The SMS with the code could not be sent. */
+    PHONE_CODE_SEND_FAILED,
+
+    /** Phone sign-in is not set up in this build (no Firebase configuration). */
+    PHONE_LOGIN_UNAVAILABLE,
+
+    /** The typed phone number is not valid for its country. */
+    PHONE_INVALID,
+
+    /** A Google or Apple sign-in could not be completed (UIKit "Login failed. Please Try again"). */
+    SOCIAL_LOGIN_FAILED,
+
+    /** Apple did not share an email address (UIKit "Please enable Share Email option to use Apple login."). */
+    APPLE_EMAIL_REQUIRED,
 
     ERROR_NETWORK,
     ERROR_TIMEOUT,
